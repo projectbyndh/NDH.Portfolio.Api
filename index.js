@@ -58,19 +58,20 @@ app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
 app.use('/api/team', require('./routes/teamRoutes'));
+app.use('/api/testimonials', require('./routes/testimonialRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
 
 // Error handling middleware (good to have at the end)
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  
+
   if (err.type === 'entity.too.large') {
-    return res.status(413).json({ 
+    return res.status(413).json({
       error: 'Payload Too Large',
       message: `Maximum allowed size is ${err.limit} bytes. Your request was ${err.length} bytes.`
     });
   }
-  
+
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
