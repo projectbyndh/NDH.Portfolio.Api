@@ -3,7 +3,9 @@ const FAQ = require('../models/FAQ');
 // Get all FAQs
 exports.getAllFAQs = async (req, res) => {
   try {
-    const faqs = await FAQ.find().sort({ createdAt: -1 });
+    const faqs = await FAQ.findAll({
+      order: [['createdAt', 'DESC']]
+    });
     res.status(200).json({
       success: true,
       count: faqs.length,
@@ -21,15 +23,15 @@ exports.getAllFAQs = async (req, res) => {
 // Get single FAQ
 exports.getFAQById = async (req, res) => {
   try {
-    const faq = await FAQ.findById(req.params.id);
-    
+    const faq = await FAQ.findByPk(req.params.id);
+
     if (!faq) {
       return res.status(404).json({
         success: false,
         message: 'FAQ not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       data: faq
@@ -47,7 +49,7 @@ exports.getFAQById = async (req, res) => {
 exports.createFAQ = async (req, res) => {
   try {
     const faq = await FAQ.create(req.body);
-    
+
     res.status(201).json({
       success: true,
       message: 'FAQ created successfully',
@@ -65,22 +67,17 @@ exports.createFAQ = async (req, res) => {
 // Update FAQ
 exports.updateFAQ = async (req, res) => {
   try {
-    const faq = await FAQ.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true
-      }
-    );
-    
+    const faq = await FAQ.findByPk(req.params.id);
+
     if (!faq) {
       return res.status(404).json({
         success: false,
         message: 'FAQ not found'
       });
     }
-    
+
+    await faq.update(req.body);
+
     res.status(200).json({
       success: true,
       message: 'FAQ updated successfully',
@@ -98,15 +95,17 @@ exports.updateFAQ = async (req, res) => {
 // Delete FAQ
 exports.deleteFAQ = async (req, res) => {
   try {
-    const faq = await FAQ.findByIdAndDelete(req.params.id);
-    
+    const faq = await FAQ.findByPk(req.params.id);
+
     if (!faq) {
       return res.status(404).json({
         success: false,
         message: 'FAQ not found'
       });
     }
-    
+
+    await faq.destroy();
+
     res.status(200).json({
       success: true,
       message: 'FAQ deleted successfully'

@@ -2,13 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const connectDB = require('./config/db');
+const { connectDB } = require('./config/database');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
-// Connect to MongoDB
+// Connect to PostgreSQL
 connectDB();
 
 // ← VERY IMPORTANT: Body parsers FIRST, with increased limit

@@ -5,11 +5,14 @@ exports.getAllTestimonials = async (req, res) => {
     try {
         const { featured, active } = req.query;
 
-        let query = {};
-        if (featured === 'true') query.featured = true;
-        if (active === 'true') query.isActive = true;
+        let where = {};
+        if (featured === 'true') where.featured = true;
+        if (active === 'true') where.isActive = true;
 
-        const testimonials = await Testimonial.find(query).sort({ createdAt: -1 });
+        const testimonials = await Testimonial.findAll({
+            where,
+            order: [['createdAt', 'DESC']]
+        });
 
         res.status(200).json({
             success: true,
@@ -28,7 +31,7 @@ exports.getAllTestimonials = async (req, res) => {
 // Get single testimonial
 exports.getTestimonialById = async (req, res) => {
     try {
-        const testimonial = await Testimonial.findById(req.params.id);
+        const testimonial = await Testimonial.findByPk(req.params.id);
 
         if (!testimonial) {
             return res.status(404).json({
@@ -82,14 +85,7 @@ exports.updateTestimonial = async (req, res) => {
             req.body.image = `/uploads/${req.file.filename}`;
         }
 
-        const testimonial = await Testimonial.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
+        const testimonial = await Testimonial.findByPk(req.params.id);
 
         if (!testimonial) {
             return res.status(404).json({
@@ -97,6 +93,8 @@ exports.updateTestimonial = async (req, res) => {
                 message: 'Testimonial not found'
             });
         }
+
+        await testimonial.update(req.body);
 
         res.status(200).json({
             success: true,
@@ -115,7 +113,7 @@ exports.updateTestimonial = async (req, res) => {
 // Delete testimonial
 exports.deleteTestimonial = async (req, res) => {
     try {
-        const testimonial = await Testimonial.findByIdAndDelete(req.params.id);
+        const testimonial = await Testimonial.findByPk(req.params.id);
 
         if (!testimonial) {
             return res.status(404).json({
@@ -123,6 +121,8 @@ exports.deleteTestimonial = async (req, res) => {
                 message: 'Testimonial not found'
             });
         }
+
+        await testimonial.destroy();
 
         res.status(200).json({
             success: true,
@@ -140,7 +140,7 @@ exports.deleteTestimonial = async (req, res) => {
 // Toggle featured status
 exports.toggleFeatured = async (req, res) => {
     try {
-        const testimonial = await Testimonial.findById(req.params.id);
+        const testimonial = await Testimonial.findByPk(req.params.id);
 
         if (!testimonial) {
             return res.status(404).json({

@@ -1,34 +1,59 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const projectSchema = new mongoose.Schema({
+const Project = sequelize.define('Project', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   title: {
-    type: String,
-    required: [true, 'Title is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Title is required'
+      }
+    }
   },
   description: {
-    type: String,
-    required: [true, 'Description is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Description is required'
+      }
+    }
   },
   image: {
-    type: String,
-    required: false
+    type: DataTypes.TEXT,
+    allowNull: true
   },
   links: {
-    type: [String],
-    default: []
+    type: DataTypes.ARRAY(DataTypes.TEXT),
+    defaultValue: []
   },
   techStack: {
-    type: [String],
-    required: [true, 'Tech stack is required']
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Tech stack is required'
+      }
+    }
   },
   category: {
-    type: String,
-    required: [true, 'Category is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Category is required'
+      }
+    }
   }
 }, {
+  tableName: 'projects',
   timestamps: true
 });
 
-module.exports = mongoose.model('Project', projectSchema);
+module.exports = Project;

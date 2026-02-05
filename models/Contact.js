@@ -1,34 +1,67 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const contactSchema = new mongoose.Schema({
+const Contact = sequelize.define('Contact', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   name: {
-    type: String,
-    required: [true, 'Name is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Name is required'
+      }
+    }
   },
   email: {
-    type: String,
-    required: [true, 'Email is required'],
-    match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email']
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: {
+        msg: 'Please provide a valid email'
+      },
+      notEmpty: {
+        msg: 'Email is required'
+      }
+    }
   },
   phoneNumber: {
-    type: String,
-    required: [true, 'Phone number is required']
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Phone number is required'
+      }
+    }
   },
   companyName: {
-    type: String,
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: true
   },
   serviceInterested: {
-    type: String,
-    required: [true, 'Service interested is required']
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Service interested is required'
+      }
+    }
   },
   message: {
-    type: String,
-    required: [true, 'Message is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Message is required'
+      }
+    }
   }
 }, {
+  tableName: 'contacts',
   timestamps: true
 });
 
-module.exports = mongoose.model('Contact', contactSchema);
+module.exports = Contact;

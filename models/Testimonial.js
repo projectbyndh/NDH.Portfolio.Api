@@ -1,46 +1,76 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const testimonialSchema = new mongoose.Schema({
+const Testimonial = sequelize.define('Testimonial', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     name: {
-        type: String,
-        required: [true, 'Client name is required'],
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                msg: 'Client name is required'
+            }
+        }
     },
     position: {
-        type: String,
-        required: [true, 'Position/Company is required'],
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                msg: 'Position/Company is required'
+            }
+        }
     },
     company: {
-        type: String,
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: true
     },
     image: {
-        type: String,
-        default: '/uploads/default-avatar.png'
+        type: DataTypes.TEXT,
+        defaultValue: '/uploads/default-avatar.png'
     },
     rating: {
-        type: Number,
-        required: [true, 'Rating is required'],
-        min: 1,
-        max: 5,
-        default: 5
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 5,
+        validate: {
+            min: {
+                args: [1],
+                msg: 'Rating must be at least 1'
+            },
+            max: {
+                args: [5],
+                msg: 'Rating must be at most 5'
+            },
+            notEmpty: {
+                msg: 'Rating is required'
+            }
+        }
     },
     text: {
-        type: String,
-        required: [true, 'Testimonial text is required'],
-        trim: true
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                msg: 'Testimonial text is required'
+            }
+        }
     },
     featured: {
-        type: Boolean,
-        default: false
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
     isActive: {
-        type: Boolean,
-        default: true
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
 }, {
+    tableName: 'testimonials',
     timestamps: true
 });
 
-module.exports = mongoose.model('Testimonial', testimonialSchema);
+module.exports = Testimonial;

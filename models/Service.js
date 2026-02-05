@@ -1,21 +1,37 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const serviceSchema = new mongoose.Schema({
+const Service = sequelize.define('Service', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   title: {
-    type: String,
-    required: [true, 'Title is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Title is required'
+      }
+    }
   },
   logo: {
-    type: String,
-    required: false
+    type: DataTypes.TEXT,
+    allowNull: true
   },
   description: {
-    type: String,
-    required: [true, 'Description is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Description is required'
+      }
+    }
   }
 }, {
+  tableName: 'services',
   timestamps: true
 });
 
-module.exports = mongoose.model('Service', serviceSchema);
+module.exports = Service;

@@ -1,15 +1,25 @@
 # Portfolio Backend API
 
-A comprehensive backend API for managing portfolio website data including blogs, careers, contacts, FAQs, partners, projects, services, and team members.
+A comprehensive backend API for managing portfolio website data including blogs, careers, contacts, FAQs, partners, projects, services, team members, and testimonials.
+
+## 🚀 Now Using PostgreSQL!
+
+This backend has been **migrated from MongoDB to PostgreSQL** for better performance, reliability, and scalability.
+
+---
 
 ## Features
 
-- RESTful API architecture
-- MongoDB database with Mongoose ODM
-- Complete CRUD operations for all modules
-- Input validation and error handling
-- CORS enabled
-- Environment variable configuration
+- ✅ RESTful API architecture
+- ✅ PostgreSQL database with Sequelize ORM
+- ✅ Complete CRUD operations for all modules
+- ✅ Input validation and error handling
+- ✅ CORS enabled
+- ✅ Environment variable configuration
+- ✅ Swagger API documentation
+- ✅ File upload support (Multer)
+
+---
 
 ## Modules
 
@@ -22,16 +32,41 @@ A comprehensive backend API for managing portfolio website data including blogs,
 7. **Projects** - Portfolio projects with tech stack and categories
 8. **Services** - Services offered
 9. **Team** - Team member profiles
+10. **Testimonials** - Client testimonials with ratings
 
-## Installation
+---
+
+## Quick Start
+
+### Prerequisites
+- PostgreSQL (v12+)
+- Node.js (v14+)
+
+### Installation
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 npm install
 
-# Install required packages (if not already installed)
-npm install mongoose dotenv cors
+# 2. Create PostgreSQL database
+# Using psql or pgAdmin, run:
+CREATE DATABASE ndh_portfolio;
+
+# 3. Configure environment
+# Edit .env and set your PostgreSQL password
+
+# 4. Initialize database tables
+npm run init-db
+
+# 5. Start server
+npm start
 ```
+
+Server runs on: **http://localhost:5000**
+
+📖 **For detailed setup instructions, see [QUICK_START.md](QUICK_START.md)**
+
+---
 
 ## Environment Variables
 
@@ -39,24 +74,32 @@ Create a `.env` file in the root directory:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/NDH-Portfolio
+
+# PostgreSQL Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=ndh_portfolio
+DB_USER=postgres
+DB_PASSWORD=your_password_here
+DB_DIALECT=postgres
+
+# Cloudinary (optional)
+CLOUDINARY_CLOUD_NAME="NDH"
+CLOUDINARY_API_KEY="your_key"
+CLOUDINARY_API_SECRET="your_secret"
 ```
 
-## Database Setup
+---
 
-Make sure MongoDB is installed and running on your system. The application will automatically connect to the database specified in your `.env` file.
-
-## Running the Application
+## NPM Scripts
 
 ```bash
-# Start server
-npm start
-
-# Start with nodemon (development)
-npm run dev
+npm start       # Start the server
+npm run dev     # Start with nodemon (auto-reload)
+npm run init-db # Initialize database tables
 ```
 
-The server will run on `http://localhost:5000`
+---
 
 ## API Endpoints
 
@@ -124,6 +167,26 @@ The server will run on `http://localhost:5000`
 - `PUT /api/team/:id` - Update team member
 - `DELETE /api/team/:id` - Delete team member
 
+### Testimonials
+- `GET /api/testimonials` - Get all testimonials
+- `GET /api/testimonials?featured=true` - Get featured testimonials
+- `GET /api/testimonials/:id` - Get single testimonial
+- `POST /api/testimonials` - Create testimonial
+- `PUT /api/testimonials/:id` - Update testimonial
+- `DELETE /api/testimonials/:id` - Delete testimonial
+- `PATCH /api/testimonials/:id/toggle-featured` - Toggle featured status
+
+---
+
+## API Documentation
+
+Interactive Swagger documentation available at:
+```
+http://localhost:5000/api-docs
+```
+
+---
+
 ## Response Format
 
 ### Success Response
@@ -144,13 +207,17 @@ The server will run on `http://localhost:5000`
 }
 ```
 
+---
+
 ## Project Structure
 
 ```
 Portfolio-Backend/
 ├── config/
-│   └── db.js              # Database connection
-├── controllers/           # Request handlers
+│   ├── database.js           # PostgreSQL connection
+│   ├── initDatabase.js       # Database initialization
+│   └── schema.sql            # SQL schema reference
+├── controllers/              # Request handlers
 │   ├── blogController.js
 │   ├── careerController.js
 │   ├── contactController.js
@@ -159,8 +226,9 @@ Portfolio-Backend/
 │   ├── partnerController.js
 │   ├── projectController.js
 │   ├── serviceController.js
-│   └── teamController.js
-├── models/               # Mongoose schemas
+│   ├── teamController.js
+│   └── testimonialController.js
+├── models/                   # Sequelize models
 │   ├── Blog.js
 │   ├── Career.js
 │   ├── Contact.js
@@ -169,8 +237,10 @@ Portfolio-Backend/
 │   ├── Partner.js
 │   ├── Project.js
 │   ├── Service.js
-│   └── Team.js
-├── routes/              # API routes
+│   ├── Team.js
+│   ├── Testimonial.js
+│   └── index.js
+├── routes/                   # API routes
 │   ├── blogRoutes.js
 │   ├── careerRoutes.js
 │   ├── contactRoutes.js
@@ -179,23 +249,86 @@ Portfolio-Backend/
 │   ├── partnerRoutes.js
 │   ├── projectRoutes.js
 │   ├── serviceRoutes.js
-│   └── teamRoutes.js
-├── .env                 # Environment variables
-├── index.js            # Application entry point
-└── package.json        # Dependencies
+│   ├── teamRoutes.js
+│   └── testimonialRoutes.js
+├── uploads/                  # Uploaded files
+├── .env                      # Environment variables
+├── index.js                  # Application entry point
+├── package.json              # Dependencies
+├── QUICK_START.md            # Quick setup guide
+├── POSTGRESQL_SETUP.md       # Detailed setup instructions
+├── MIGRATION_COMPLETE.md     # Migration summary
+└── CONTROLLER_MIGRATION.md   # Code migration guide
 ```
+
+---
 
 ## Technologies Used
 
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM for MongoDB
+- **PostgreSQL** - Relational database
+- **Sequelize** - ORM for PostgreSQL
 - **dotenv** - Environment variables
 - **cors** - Cross-origin resource sharing
+- **multer** - File upload handling
+- **swagger-jsdoc** - API documentation
+- **swagger-ui-express** - Swagger UI
+
+---
+
+## Database Schema
+
+### Key Features
+- Auto-incrementing integer IDs
+- Timestamps (createdAt, updatedAt) on all tables
+- Array support for tech stacks, links, requirements
+- JSONB support for nested objects (location)
+- Proper data types and constraints
+
+---
+
+## Documentation
+
+- 📖 **[QUICK_START.md](QUICK_START.md)** - Get started in 5 steps
+- 📖 **[POSTGRESQL_SETUP.md](POSTGRESQL_SETUP.md)** - Complete setup guide
+- 📖 **[MIGRATION_COMPLETE.md](MIGRATION_COMPLETE.md)** - Migration summary
+- 📖 **[CONTROLLER_MIGRATION.md](CONTROLLER_MIGRATION.md)** - Code examples
+
+---
+
+## Troubleshooting
+
+### Database Connection Error
+```
+Error: password authentication failed
+```
+**Solution:** Update `DB_PASSWORD` in `.env` file
+
+### Tables Don't Exist
+```
+Error: relation "blogs" does not exist
+```
+**Solution:** Run `npm run init-db`
+
+### Port Already in Use
+```
+Error: Port 5432 is already in use
+```
+**Solution:** PostgreSQL is running, or change port in `.env`
+
+---
 
 ## License
 
 ISC
-# NDH.Portfolio.Api
-# NDH.Portfolio.Api
+
+---
+
+## Repository
+
+GitHub: [NDH.Portfolio.Api](https://github.com/Bibek1604/Backend-NDH)
+
+---
+
+**Built with ❤️ by Nepal Digital Heights**

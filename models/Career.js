@@ -1,38 +1,78 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const careerSchema = new mongoose.Schema({
+const Career = sequelize.define('Career', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   title: {
-    type: String,
-    required: [true, 'Title is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Title is required'
+      }
+    }
   },
   description: {
-    type: String,
-    required: [true, 'Description is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Description is required'
+      }
+    }
   },
   image: {
-    type: String,
-    required: [true, 'Image URL is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Image URL is required'
+      }
+    }
   },
   requirements: {
-    type: [String],
-    required: [true, 'Requirements are required']
+    type: DataTypes.ARRAY(DataTypes.TEXT),
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Requirements are required'
+      }
+    }
   },
   responsibilities: {
-    type: [String],
-    required: [true, 'Responsibilities are required']
+    type: DataTypes.ARRAY(DataTypes.TEXT),
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Responsibilities are required'
+      }
+    }
   },
   applyLink: {
-    type: String,
-    required: [true, 'Apply link is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Apply link is required'
+      }
+    }
   },
   location: {
-    type: String,
-    required: [true, 'Location is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Location is required'
+      }
+    }
   }
 }, {
+  tableName: 'careers',
   timestamps: true
 });
 
-module.exports = mongoose.model('Career', careerSchema);
+module.exports = Career;

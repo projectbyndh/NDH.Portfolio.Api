@@ -3,7 +3,9 @@ const Service = require('../models/Service');
 // Get all services
 exports.getAllServices = async (req, res) => {
   try {
-    const services = await Service.find().sort({ createdAt: -1 });
+    const services = await Service.findAll({
+      order: [['createdAt', 'DESC']]
+    });
     res.status(200).json({
       success: true,
       count: services.length,
@@ -21,15 +23,15 @@ exports.getAllServices = async (req, res) => {
 // Get single service
 exports.getServiceById = async (req, res) => {
   try {
-    const service = await Service.findById(req.params.id);
-    
+    const service = await Service.findByPk(req.params.id);
+
     if (!service) {
       return res.status(404).json({
         success: false,
         message: 'Service not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       data: service
@@ -55,7 +57,7 @@ exports.createService = async (req, res) => {
     }
 
     const service = await Service.create(req.body);
-    
+
     res.status(201).json({
       success: true,
       message: 'Service created successfully',
@@ -90,22 +92,17 @@ exports.updateService = async (req, res) => {
       // req.body.logo remains as is
     }
 
-    const service = await Service.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true
-      }
-    );
-    
+    const service = await Service.findByPk(req.params.id);
+
     if (!service) {
       return res.status(404).json({
         success: false,
         message: 'Service not found'
       });
     }
-    
+
+    await service.update(req.body);
+
     res.status(200).json({
       success: true,
       message: 'Service updated successfully',
@@ -132,15 +129,17 @@ exports.updateService = async (req, res) => {
 // Delete service
 exports.deleteService = async (req, res) => {
   try {
-    const service = await Service.findByIdAndDelete(req.params.id);
-    
+    const service = await Service.findByPk(req.params.id);
+
     if (!service) {
       return res.status(404).json({
         success: false,
         message: 'Service not found'
       });
     }
-    
+
+    await service.destroy();
+
     res.status(200).json({
       success: true,
       message: 'Service deleted successfully'

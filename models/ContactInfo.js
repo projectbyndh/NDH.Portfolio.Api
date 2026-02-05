@@ -1,35 +1,56 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const contactInfoSchema = new mongoose.Schema({
+const ContactInfo = sequelize.define('ContactInfo', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   location: {
-    address: {
-      type: String,
-      required: [true, 'Address is required']
-    },
-    latitude: {
-      type: Number,
-      required: [true, 'Latitude is required']
-    },
-    longitude: {
-      type: Number,
-      required: [true, 'Longitude is required']
+    type: DataTypes.JSONB,
+    allowNull: false,
+    validate: {
+      isValidLocation(value) {
+        if (!value.address || !value.latitude || !value.longitude) {
+          throw new Error('Location must include address, latitude, and longitude');
+        }
+      }
     }
   },
   email: {
-    type: String,
-    required: [true, 'Email is required'],
-    match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email']
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: {
+        msg: 'Please provide a valid email'
+      },
+      notEmpty: {
+        msg: 'Email is required'
+      }
+    }
   },
   phone: {
-    type: String,
-    required: [true, 'Phone is required']
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Phone is required'
+      }
+    }
   },
   workingHours: {
-    type: String,
-    required: [true, 'Working hours are required']
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Working hours are required'
+      }
+    }
   }
 }, {
+  tableName: 'contact_info',
   timestamps: true
 });
 
-module.exports = mongoose.model('ContactInfo', contactInfoSchema);
+module.exports = ContactInfo;

@@ -3,11 +3,13 @@ const Team = require('../models/Team');
 // Get all team members
 exports.getAllTeamMembers = async (req, res) => {
   try {
-    const team = await Team.find().sort({ createdAt: -1 });
+    const teamMembers = await Team.findAll({
+      order: [['createdAt', 'DESC']]
+    });
     res.status(200).json({
       success: true,
-      count: team.length,
-      data: team
+      count: teamMembers.length,
+      data: teamMembers
     });
   } catch (error) {
     res.status(500).json({
@@ -21,15 +23,15 @@ exports.getAllTeamMembers = async (req, res) => {
 // Get single team member
 exports.getTeamMemberById = async (req, res) => {
   try {
-    const teamMember = await Team.findById(req.params.id);
-    
+    const teamMember = await Team.findByPk(req.params.id);
+
     if (!teamMember) {
       return res.status(404).json({
         success: false,
         message: 'Team member not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       data: teamMember
@@ -52,7 +54,7 @@ exports.createTeamMember = async (req, res) => {
     }
 
     const teamMember = await Team.create(req.body);
-    
+
     res.status(201).json({
       success: true,
       message: 'Team member created successfully',
@@ -75,22 +77,17 @@ exports.updateTeamMember = async (req, res) => {
       req.body.image = `/uploads/${req.file.filename}`;
     }
 
-    const teamMember = await Team.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true
-      }
-    );
-    
+    const teamMember = await Team.findByPk(req.params.id);
+
     if (!teamMember) {
       return res.status(404).json({
         success: false,
         message: 'Team member not found'
       });
     }
-    
+
+    await teamMember.update(req.body);
+
     res.status(200).json({
       success: true,
       message: 'Team member updated successfully',
@@ -108,15 +105,17 @@ exports.updateTeamMember = async (req, res) => {
 // Delete team member
 exports.deleteTeamMember = async (req, res) => {
   try {
-    const teamMember = await Team.findByIdAndDelete(req.params.id);
-    
+    const teamMember = await Team.findByPk(req.params.id);
+
     if (!teamMember) {
       return res.status(404).json({
         success: false,
         message: 'Team member not found'
       });
     }
-    
+
+    await teamMember.destroy();
+
     res.status(200).json({
       success: true,
       message: 'Team member deleted successfully'

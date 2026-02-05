@@ -3,7 +3,9 @@ const Career = require('../models/Career');
 // Get all careers
 exports.getAllCareers = async (req, res) => {
   try {
-    const careers = await Career.find().sort({ createdAt: -1 });
+    const careers = await Career.findAll({
+      order: [['createdAt', 'DESC']]
+    });
     res.status(200).json({
       success: true,
       count: careers.length,
@@ -21,15 +23,15 @@ exports.getAllCareers = async (req, res) => {
 // Get single career
 exports.getCareerById = async (req, res) => {
   try {
-    const career = await Career.findById(req.params.id);
-    
+    const career = await Career.findByPk(req.params.id);
+
     if (!career) {
       return res.status(404).json({
         success: false,
         message: 'Career not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       data: career
@@ -52,7 +54,7 @@ exports.createCareer = async (req, res) => {
     }
 
     const career = await Career.create(req.body);
-    
+
     res.status(201).json({
       success: true,
       message: 'Career created successfully',
@@ -75,22 +77,17 @@ exports.updateCareer = async (req, res) => {
       req.body.image = `/uploads/${req.file.filename}`;
     }
 
-    const career = await Career.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true
-      }
-    );
-    
+    const career = await Career.findByPk(req.params.id);
+
     if (!career) {
       return res.status(404).json({
         success: false,
         message: 'Career not found'
       });
     }
-    
+
+    await career.update(req.body);
+
     res.status(200).json({
       success: true,
       message: 'Career updated successfully',
@@ -108,15 +105,17 @@ exports.updateCareer = async (req, res) => {
 // Delete career
 exports.deleteCareer = async (req, res) => {
   try {
-    const career = await Career.findByIdAndDelete(req.params.id);
-    
+    const career = await Career.findByPk(req.params.id);
+
     if (!career) {
       return res.status(404).json({
         success: false,
         message: 'Career not found'
       });
     }
-    
+
+    await career.destroy();
+
     res.status(200).json({
       success: true,
       message: 'Career deleted successfully'

@@ -3,7 +3,9 @@ const Project = require('../models/Project');
 // Get all projects
 exports.getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    const projects = await Project.findAll({
+      order: [['createdAt', 'DESC']]
+    });
     res.status(200).json({
       success: true,
       count: projects.length,
@@ -21,15 +23,15 @@ exports.getAllProjects = async (req, res) => {
 // Get single project
 exports.getProjectById = async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
-    
+    const project = await Project.findByPk(req.params.id);
+
     if (!project) {
       return res.status(404).json({
         success: false,
         message: 'Project not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       data: project
@@ -46,8 +48,11 @@ exports.getProjectById = async (req, res) => {
 // Get projects by category
 exports.getProjectsByCategory = async (req, res) => {
   try {
-    const projects = await Project.find({ category: req.params.category }).sort({ createdAt: -1 });
-    
+    const projects = await Project.findAll({
+      where: { category: req.params.category },
+      order: [['createdAt', 'DESC']]
+    });
+
     res.status(200).json({
       success: true,
       count: projects.length,
@@ -84,7 +89,7 @@ exports.createProject = async (req, res) => {
     }
 
     const project = await Project.create(projectData);
-    
+
     res.status(201).json({
       success: true,
       message: 'Project created successfully',
@@ -100,7 +105,7 @@ exports.createProject = async (req, res) => {
         fs.unlinkSync(filePath);
       }
     }
-    
+
     res.status(400).json({
       success: false,
       message: 'Failed to create project',
@@ -113,8 +118,8 @@ exports.createProject = async (req, res) => {
 exports.updateProject = async (req, res) => {
   try {
     // Find the existing project first
-    const existingProject = await Project.findById(req.params.id);
-    
+    const existingProject = await Project.findByPk(req.params.id);
+
     if (!existingProject) {
       // If file was uploaded but project doesn't exist, delete the file
       if (req.file) {
@@ -125,7 +130,7 @@ exports.updateProject = async (req, res) => {
           fs.unlinkSync(filePath);
         }
       }
-      
+
       return res.status(404).json({
         success: false,
         message: 'Project not found'
@@ -141,14 +146,14 @@ exports.updateProject = async (req, res) => {
 
     // Parse arrays if provided as strings
     if (req.body.techStack) {
-      updateData.techStack = typeof req.body.techStack === 'string' 
-        ? JSON.parse(req.body.techStack) 
+      updateData.techStack = typeof req.body.techStack === 'string'
+        ? JSON.parse(req.body.techStack)
         : req.body.techStack;
     }
 
     if (req.body.links) {
-      updateData.links = typeof req.body.links === 'string' 
-        ? JSON.parse(req.body.links) 
+      updateData.links = typeof req.body.links === 'string'
+        ? JSON.parse(req.body.links)
         : req.body.links;
     }
 
@@ -168,19 +173,12 @@ exports.updateProject = async (req, res) => {
       updateData.image = req.body.image;
     }
 
-    const project = await Project.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      {
-        new: true,
-        runValidators: true
-      }
-    );
-    
+    await existingProject.update(updateData);
+
     res.status(200).json({
       success: true,
       message: 'Project updated successfully',
-      data: project
+      data: existingProject
     });
   } catch (error) {
     // If there was an error and a new file was uploaded, delete it
@@ -192,7 +190,7 @@ exports.updateProject = async (req, res) => {
         fs.unlinkSync(filePath);
       }
     }
-    
+
     res.status(400).json({
       success: false,
       message: 'Failed to update project',
@@ -204,8 +202,8 @@ exports.updateProject = async (req, res) => {
 // Delete project
 exports.deleteProject = async (req, res) => {
   try {
-    const project = await Project.findByIdAndDelete(req.params.id);
-    
+    const project = await Project.findByPk(req.params.id);
+
     if (!project) {
       return res.status(404).json({
         success: false,
@@ -222,7 +220,9 @@ exports.deleteProject = async (req, res) => {
         fs.unlinkSync(filePath);
       }
     }
-    
+
+    await project.destroy();
+
     res.status(200).json({
       success: true,
       message: 'Project deleted successfully'

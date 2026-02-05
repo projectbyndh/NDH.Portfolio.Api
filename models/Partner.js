@@ -1,17 +1,33 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const partnerSchema = new mongoose.Schema({
+const Partner = sequelize.define('Partner', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   name: {
-    type: String,
-    required: [true, 'Partner name is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Partner name is required'
+      }
+    }
   },
   image: {
-    type: String,
-    required: [true, 'Partner image URL is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Partner image URL is required'
+      }
+    }
   }
 }, {
+  tableName: 'partners',
   timestamps: true
 });
 
-module.exports = mongoose.model('Partner', partnerSchema);
+module.exports = Partner;

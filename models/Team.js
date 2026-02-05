@@ -1,26 +1,51 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const teamSchema = new mongoose.Schema({
+const Team = sequelize.define('Team', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   name: {
-    type: String,
-    required: [true, 'Team member name is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Team member name is required'
+      }
+    }
   },
   position: {
-    type: String,
-    required: [true, 'Position is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Position is required'
+      }
+    }
   },
   description: {
-    type: String,
-    required: [true, 'Description is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Description is required'
+      }
+    }
   },
   image: {
-    type: String,
-    required: [true, 'Image URL is required']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Image URL is required'
+      }
+    }
   }
 }, {
+  tableName: 'team_members',
   timestamps: true
 });
 
-module.exports = mongoose.model('Team', teamSchema);
+module.exports = Team;
