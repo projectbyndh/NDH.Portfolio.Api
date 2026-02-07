@@ -48,9 +48,9 @@ exports.getPartnerById = async (req, res) => {
 // Create partner
 exports.createPartner = async (req, res) => {
   try {
-    // Handle image upload
+    // Handle image upload - Cloudinary URL is in req.file.path
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path; // Cloudinary URL
     }
 
     const partner = await Partner.create(req.body);
@@ -72,9 +72,9 @@ exports.createPartner = async (req, res) => {
 // Update partner
 exports.updatePartner = async (req, res) => {
   try {
-    // Handle image upload
+    // Handle image upload - Cloudinary URL is in req.file.path
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path; // Cloudinary URL
     }
 
     const partner = await Partner.findByPk(req.params.id);

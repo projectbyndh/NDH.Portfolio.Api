@@ -60,8 +60,8 @@ router.post('/image', upload.single('image'), (req, res) => {
       });
     }
 
-    // Return the image URL that can be used by the frontend
-    const imageUrl = `/uploads/${req.file.filename}`;
+    // Return the Cloudinary URL
+    const imageUrl = req.file.path; // Cloudinary URL
 
     res.status(200).json({
       success: true,
@@ -71,7 +71,7 @@ router.post('/image', upload.single('image'), (req, res) => {
         filename: req.file.filename,
         originalName: req.file.originalname,
         size: req.file.size,
-        mimetype: req.file.mimetype
+        cloudinaryId: req.file.filename // Cloudinary public ID
       }
     });
 
@@ -150,13 +150,13 @@ router.post('/images', upload.array('images', 10), (req, res) => {
       });
     }
 
-    // Return array of image URLs
+    // Return array of Cloudinary URLs
     const images = req.files.map(file => ({
-      imageUrl: `/uploads/${file.filename}`,
+      imageUrl: file.path, // Cloudinary URL
       filename: file.filename,
       originalName: file.originalname,
       size: file.size,
-      mimetype: file.mimetype
+      cloudinaryId: file.filename // Cloudinary public ID
     }));
 
     res.status(200).json({

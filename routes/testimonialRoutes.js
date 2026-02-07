@@ -6,7 +6,6 @@ const {
     createTestimonial,
     updateTestimonial,
     deleteTestimonial,
-    toggleFeatured
 } = require('../controllers/testimonialController');
 const upload = require('../middleware/upload');
 
@@ -99,14 +98,186 @@ const upload = require('../middleware/upload');
  */
 router.route('/')
     .get(getAllTestimonials)
+
+    /**
+     * @swagger
+     * /api/testimonials:
+     *   post:
+     *     summary: Create a new testimonial
+     *     tags: [Testimonials]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - name
+     *               - position
+     *               - text
+     *               - rating
+     *             properties:
+     *               name:
+     *                 type: string
+     *                 description: Client name
+     *               position:
+     *                 type: string
+     *                 description: Client position
+     *               company:
+     *                 type: string
+     *                 description: Company name
+     *               image:
+     *                 type: string
+     *                 format: binary
+     *                 description: Client photo (image file)
+     *               rating:
+     *                 type: number
+     *                 minimum: 1
+     *                 maximum: 5
+     *                 description: Rating 1-5
+     *               text:
+     *                 type: string
+     *                 description: Review text
+     *     responses:
+     *       201:
+     *         description: Testimonial created successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   example: true
+     *                 message:
+     *                   type: string
+     *                   example: Testimonial created successfully
+     *                 data:
+     *                   $ref: '#/components/schemas/Testimonial'
+     *       400:
+     *         description: Bad request
+     */
     .post(upload.single('image'), createTestimonial);
 
+/**
+ * @swagger
+ * /api/testimonials/{id}:
+ *   get:
+ *     summary: Get a testimonial by ID
+ *     tags: [Testimonials]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The testimonial ID
+ *     responses:
+ *       200:
+ *         description: Testimonial retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Testimonial'
+ *       404:
+ *         description: Testimonial not found
+ */
 router.route('/:id')
     .get(getTestimonialById)
+
+    /**
+     * @swagger
+     * /api/testimonials/{id}:
+     *   put:
+     *     summary: Update a testimonial by ID
+     *     tags: [Testimonials]
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The testimonial ID
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               name:
+     *                 type: string
+     *               position:
+     *                 type: string
+     *               company:
+     *                 type: string
+     *               image:
+     *                 type: string
+     *                 format: binary
+     *               rating:
+     *                 type: number
+     *               text:
+     *                 type: string
+     *               featured:
+     *                 type: boolean
+     *               isActive:
+     *                 type: boolean
+     *     responses:
+     *       200:
+     *         description: Testimonial updated successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                 message:
+     *                   type: string
+     *                 data:
+     *                   $ref: '#/components/schemas/Testimonial'
+     *       404:
+     *         description: Testimonial not found
+     */
     .put(upload.single('image'), updateTestimonial)
+
+    /**
+     * @swagger
+     * /api/testimonials/{id}:
+     *   delete:
+     *     summary: Delete a testimonial by ID
+     *     tags: [Testimonials]
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: The testimonial ID
+     *     responses:
+     *       200:
+     *         description: Testimonial deleted successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   example: true
+     *                 message:
+     *                   type: string
+     *                   example: Testimonial deleted successfully
+     *       404:
+     *         description: Testimonial not found
+     */
     .delete(deleteTestimonial);
 
-router.route('/:id/toggle-featured')
-    .patch(toggleFeatured);
+// Route removed for CRUD compliance
 
 module.exports = router;
