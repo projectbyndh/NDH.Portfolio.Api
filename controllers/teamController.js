@@ -48,9 +48,13 @@ exports.getTeamMemberById = async (req, res) => {
 // Create team member
 exports.createTeamMember = async (req, res) => {
   try {
+    console.log('📥 createTeamMember called');
+    console.log('📁 req.file:', req.file);
+    console.log('📄 req.body:', req.body);
+
     // Handle image upload
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     const teamMember = await Team.create(req.body);
@@ -74,7 +78,7 @@ exports.updateTeamMember = async (req, res) => {
   try {
     // Handle image upload
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     const teamMember = await Team.findByPk(req.params.id);
@@ -105,9 +109,12 @@ exports.updateTeamMember = async (req, res) => {
 // Delete team member
 exports.deleteTeamMember = async (req, res) => {
   try {
+    console.log('🗑️ deleteTeamMember called for ID:', req.params.id);
+
     const teamMember = await Team.findByPk(req.params.id);
 
     if (!teamMember) {
+      console.log('❌ Team member not found');
       return res.status(404).json({
         success: false,
         message: 'Team member not found'
@@ -115,12 +122,14 @@ exports.deleteTeamMember = async (req, res) => {
     }
 
     await teamMember.destroy();
+    console.log('✅ Team member deleted successfully');
 
     res.status(200).json({
       success: true,
       message: 'Team member deleted successfully'
     });
   } catch (error) {
+    console.error('❌ Delete error:', error);
     res.status(500).json({
       success: false,
       message: 'Server Error',

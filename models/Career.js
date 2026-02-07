@@ -52,15 +52,6 @@ const Career = sequelize.define('Career', {
       }
     }
   },
-  applyLink: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: 'Apply link is required'
-      }
-    }
-  },
   location: {
     type: DataTypes.STRING,
     allowNull: false,

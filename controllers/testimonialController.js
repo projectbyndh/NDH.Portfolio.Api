@@ -58,7 +58,7 @@ exports.createTestimonial = async (req, res) => {
     try {
         // Handle image upload
         if (req.file) {
-            req.body.image = `/uploads/${req.file.filename}`;
+            req.body.image = req.file.path;
         }
 
         const testimonial = await Testimonial.create(req.body);
@@ -69,6 +69,7 @@ exports.createTestimonial = async (req, res) => {
             data: testimonial
         });
     } catch (error) {
+        console.error('Error creating testimonial:', error);
         res.status(400).json({
             success: false,
             message: 'Failed to create testimonial',
@@ -82,7 +83,7 @@ exports.updateTestimonial = async (req, res) => {
     try {
         // Handle image upload
         if (req.file) {
-            req.body.image = `/uploads/${req.file.filename}`;
+            req.body.image = req.file.path;
         }
 
         const testimonial = await Testimonial.findByPk(req.params.id);

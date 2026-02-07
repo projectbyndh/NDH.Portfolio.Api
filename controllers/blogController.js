@@ -48,9 +48,13 @@ exports.getBlogById = async (req, res) => {
 // Create blog
 exports.createBlog = async (req, res) => {
   try {
+    console.log('📥 createBlog called');
+    console.log('📁 req.file:', req.file);
+    console.log('📄 req.body:', req.body);
+
     // Handle image upload
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     const blog = await Blog.create(req.body);
@@ -74,7 +78,7 @@ exports.updateBlog = async (req, res) => {
   try {
     // Handle image upload
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path;
     }
 
     const blog = await Blog.findByPk(req.params.id);
