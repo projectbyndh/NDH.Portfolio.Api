@@ -1,4 +1,5 @@
 const Contact = require('../models/Contact');
+const { sendContactNotification } = require('../services/emailService');
 
 // Get all contact submissions
 exports.getAllContacts = async (req, res) => {
@@ -49,6 +50,9 @@ exports.getContactById = async (req, res) => {
 exports.createContact = async (req, res) => {
   try {
     const contact = await Contact.create(req.body);
+
+    // Send email notification asynchronously (don't await to keep response fast)
+    sendContactNotification(contact).catch(err => console.error('Email notification failed:', err));
 
     res.status(201).json({
       success: true,

@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { connectDB } = require('./config/database');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -10,6 +12,19 @@ const app = express();
 
 // Connect to PostgreSQL
 connectDB();
+
+// Security enhancements
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Allow loading resources across origins (needed for images/PDFs from Cloudinary)
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+app.use('/api', limiter);
 
 // ← VERY IMPORTANT: Body parsers FIRST, with increased limit
 app.use(express.json({ limit: '10mb' }));          // ← JSON bodies (most common cause)

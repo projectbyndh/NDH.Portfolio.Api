@@ -1,6 +1,7 @@
 const CareerApplication = require('../models/CareerApplication');
 const Career = require('../models/Career');
 const ExcelJS = require('exceljs');
+const { sendApplicationNotification } = require('../services/emailService');
 
 // Get all applications
 exports.getAllApplications = async (req, res) => {
@@ -68,6 +69,9 @@ exports.createApplication = async (req, res) => {
         }
 
         const application = await CareerApplication.create(req.body);
+
+        // Send email notification asynchronously
+        sendApplicationNotification(application).catch(err => console.error('Email notification failed:', err));
 
         res.status(201).json({
             success: true,
