@@ -1,20 +1,20 @@
 const LeadershipLayer = require('./LeadershipLayer');
-const Role = require('./Role');
+// const Role = require('./Role'); // Removed - using simplified team structure
 const Team = require('./Team');
 const Career = require('./Career');
 const CareerApplication = require('./CareerApplication');
 
 const initAssociations = () => {
-    // LeadershipLayer <-> Role (keeping for backwards compatibility, but not used in simplified structure)
-    LeadershipLayer.hasMany(Role, {
-        foreignKey: 'layerId',
-        as: 'roles',
-        onDelete: 'CASCADE'
-    });
-    Role.belongsTo(LeadershipLayer, {
-        foreignKey: 'layerId',
-        as: 'layer'
-    });
+    // LeadershipLayer <-> Role (REMOVED - using simplified structure without roles)
+    // LeadershipLayer.hasMany(Role, {
+    //     foreignKey: 'layerId',
+    //     as: 'roles',
+    //     onDelete: 'CASCADE'
+    // });
+    // Role.belongsTo(LeadershipLayer, {
+    //     foreignKey: 'layerId',
+    //     as: 'layer'
+    // });
 
     // LeadershipLayer <-> Team (Member) - Direct relationship (simplified)
     LeadershipLayer.hasMany(Team, {

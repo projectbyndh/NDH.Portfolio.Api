@@ -7,7 +7,7 @@ const FAQ = require('./FAQ');
 const LeadershipLayer = require('./LeadershipLayer');
 const Partner = require('./Partner');
 const Project = require('./Project');
-const Role = require('./Role');
+// const Role = require('./Role'); // Removed - using simplified team structure
 const Service = require('./Service');
 const Team = require('./Team');
 const Testimonial = require('./Testimonial');
@@ -21,7 +21,7 @@ module.exports = {
     LeadershipLayer,
     Partner,
     Project,
-    Role,
+    // Role, // Removed - using simplified team structure
     Service,
     Team,
     Testimonial

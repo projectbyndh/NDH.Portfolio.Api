@@ -15,13 +15,13 @@ const { protect } = require('../middleware/auth');
  *       properties:
  *         username:
  *           type: string
- *           description: Admin username
- *           example: admin
+ *           description: Admin username/email
+ *           example: admin.ndh@gmail.com
  *         password:
  *           type: string
  *           format: password
  *           description: Admin password
- *           example: manigram#2025@ndhadmin
+ *           example: Manigram@ndh@123#
  *     LoginResponse:
  *       type: object
  *       properties:
@@ -90,7 +90,7 @@ router.post('/login', login);
  *                   properties:
  *                     username:
  *                       type: string
- *                       example: admin
+ *                       example: admin.ndh@gmail.com
  *                     role:
  *                       type: string
  *                       example: admin

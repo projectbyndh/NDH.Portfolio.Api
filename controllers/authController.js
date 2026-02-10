@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 
 // Hardcoded admin credentials (should be in .env in production)
 const ADMIN_CREDENTIALS = {
-    username: process.env.ADMIN_USERNAME || 'admin',
-    password: process.env.ADMIN_PASSWORD || 'manigram#2025@ndhadmin'
+    username: process.env.ADMIN_USERNAME || 'admin.ndh@gmail.com',
+    password: process.env.ADMIN_PASSWORD || 'Manigram@ndh@123#'
 };
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_this_in_production';
@@ -35,7 +35,7 @@ exports.login = async (req, res) => {
 
         // Create token
         const token = jwt.sign(
-            { id: 'admin', role: 'admin' },
+            { id: 'admin', role: 'admin', username: ADMIN_CREDENTIALS.username },
             JWT_SECRET,
             { expiresIn: '30d' }
         );
@@ -44,7 +44,7 @@ exports.login = async (req, res) => {
             success: true,
             token,
             user: {
-                username: 'admin',
+                username: ADMIN_CREDENTIALS.username,
                 role: 'admin'
             }
         });
@@ -69,7 +69,7 @@ exports.verifyToken = async (req, res) => {
         res.status(200).json({
             success: true,
             user: {
-                username: req.user.username || 'admin',
+                username: req.user.username || ADMIN_CREDENTIALS.username,
                 role: req.user.role || 'admin'
             }
         });
