@@ -82,7 +82,7 @@ app.use('/api/faqs', require('./routes/faqRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
-app.use('/api/team-structure', require('./routes/teamStructureRoutes'));
+app.use('/api/team-structure', require('./routes/teamStructureRoutesSimplified'));
 app.use('/api/testimonials', require('./routes/testimonialRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
 

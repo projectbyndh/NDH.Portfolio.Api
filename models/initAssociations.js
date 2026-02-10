@@ -5,7 +5,7 @@ const Career = require('./Career');
 const CareerApplication = require('./CareerApplication');
 
 const initAssociations = () => {
-    // LeadershipLayer <-> Role
+    // LeadershipLayer <-> Role (keeping for backwards compatibility, but not used in simplified structure)
     LeadershipLayer.hasMany(Role, {
         foreignKey: 'layerId',
         as: 'roles',
@@ -16,15 +16,15 @@ const initAssociations = () => {
         as: 'layer'
     });
 
-    // Role <-> Team (Member)
-    Role.hasMany(Team, {
-        foreignKey: 'roleId',
+    // LeadershipLayer <-> Team (Member) - Direct relationship (simplified)
+    LeadershipLayer.hasMany(Team, {
+        foreignKey: 'layerId',
         as: 'members',
-        onDelete: 'SET NULL'
+        onDelete: 'CASCADE'
     });
-    Team.belongsTo(Role, {
-        foreignKey: 'roleId',
-        as: 'role'
+    Team.belongsTo(LeadershipLayer, {
+        foreignKey: 'layerId',
+        as: 'layer'
     });
 
     // Career <-> CareerApplication

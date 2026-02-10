@@ -14,18 +14,19 @@ const Team = sequelize.define('Team', {
       notEmpty: { msg: 'Name is required' }
     }
   },
-  roleId: {
+  layerId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: {
-      model: 'roles',
+      model: 'leadership_layers',
       key: 'id'
-    }
+    },
+    comment: 'Which category/team this member belongs to'
   },
-  designation: {
+  title: {
     type: DataTypes.STRING,
-    allowNull: true,
-    comment: 'Custom designation override (e.g. "Lead Developer"). If null, the role title is used.'
+    allowNull: false,
+    comment: 'Job title/designation (e.g., CEO, Senior Developer, Marketing Manager)'
   },
   bio: {
     type: DataTypes.TEXT,
