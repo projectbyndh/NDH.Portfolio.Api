@@ -10,6 +10,10 @@ const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
+// Initialize Model Associations
+const initAssociations = require('./models/initAssociations');
+initAssociations();
+
 // Connect to PostgreSQL
 connectDB();
 
@@ -21,8 +25,11 @@ app.use(helmet({
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  max: process.env.NODE_ENV === 'development' ? 1000 : 100, // limit each IP to 100 requests per windowMs (1000 for dev)
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.ip === '127.0.0.1' || req.ip === '::1' || req.ip === '::ffff:127.0.0.1'
 });
 app.use('/api', limiter);
 
@@ -63,101 +70,33 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Portfolio Backend API' });
 });
 
-// API Routes
-try {
-  app.use('/api/auth', require('./routes/authRoutes'));
-  console.log('✅ Auth routes loaded');
-} catch (err) {
-  console.error('❌ Error loading auth routes:', err.message);
-}
+// API Routes - Explicitly defined for reliability
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/blogs', require('./routes/blogRoutes'));
+app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/careers', require('./routes/careerRoutes'));
+app.use('/api/career-applications', require('./routes/careerApplicationRoutes'));
+app.use('/api/contacts', require('./routes/contactRoutes'));
+app.use('/api/contact-info', require('./routes/contactInfoRoutes'));
+app.use('/api/faqs', require('./routes/faqRoutes'));
+app.use('/api/partners', require('./routes/partnerRoutes'));
+app.use('/api/projects', require('./routes/projectRoutes'));
+app.use('/api/services', require('./routes/serviceRoutes'));
+app.use('/api/team-structure', require('./routes/teamStructureRoutes'));
+app.use('/api/testimonials', require('./routes/testimonialRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
 
-try {
-  app.use('/api/blogs', require('./routes/blogRoutes'));
-  console.log('✅ Blog routes loaded');
-} catch (err) {
-  console.error('❌ Error loading blog routes:', err.message);
-}
+// Connectivity & Health Check
+app.get('/api/health', (req, res) => res.json({
+  status: 'online',
+  timestamp: new Date(),
+  version: '1.2.0'
+}));
 
-try {
-  app.use('/api/careers', require('./routes/careerRoutes'));
-  console.log('✅ Career routes loaded');
-} catch (err) {
-  console.error('❌ Error loading career routes:', err.message);
-}
-
-try {
-  app.use('/api/career-applications', require('./routes/careerApplicationRoutes'));
-  console.log('✅ Career application routes loaded');
-} catch (err) {
-  console.error('❌ Error loading career application routes:', err.message);
-}
-
-try {
-  app.use('/api/contacts', require('./routes/contactRoutes'));
-  console.log('✅ Contact routes loaded');
-} catch (err) {
-  console.error('❌ Error loading contact routes:', err.message);
-}
-
-try {
-  app.use('/api/contact-info', require('./routes/contactInfoRoutes'));
-  console.log('✅ Contact info routes loaded');
-} catch (err) {
-  console.error('❌ Error loading contact info routes:', err.message);
-}
-
-try {
-  app.use('/api/faqs', require('./routes/faqRoutes'));
-  console.log('✅ FAQ routes loaded');
-} catch (err) {
-  console.error('❌ Error loading FAQ routes:', err.message);
-}
-
-try {
-  app.use('/api/partners', require('./routes/partnerRoutes'));
-  console.log('✅ Partner routes loaded');
-} catch (err) {
-  console.error('❌ Error loading partner routes:', err.message);
-}
-
-try {
-  app.use('/api/projects', require('./routes/projectRoutes'));
-  console.log('✅ Project routes loaded');
-} catch (err) {
-  console.error('❌ Error loading project routes:', err.message);
-}
-
-try {
-  app.use('/api/services', require('./routes/serviceRoutes'));
-  console.log('✅ Service routes loaded');
-} catch (err) {
-  console.error('❌ Error loading service routes:', err.message);
-}
-
-try {
-  app.use('/api/team', require('./routes/teamRoutes'));
-  console.log('✅ Team routes loaded');
-} catch (err) {
-  console.error('❌ Error loading team routes:', err.message);
-}
-
-try {
-  app.use('/api/testimonials', require('./routes/testimonialRoutes'));
-  console.log('✅ Testimonial routes loaded');
-} catch (err) {
-  console.error('❌ Error loading testimonial routes:', err.message);
-}
-
-try {
-  app.use('/api/upload', require('./routes/uploadRoutes'));
-  console.log('✅ Upload routes loaded');
-} catch (err) {
-  console.error('❌ Error loading upload routes:', err.message);
-}
-
-// Error handling middleware (good to have at the end)
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('❌ Global Error:', err.message);
+  if (err.stack) console.error(err.stack);
 
   if (err.type === 'entity.too.large') {
     return res.status(413).json({

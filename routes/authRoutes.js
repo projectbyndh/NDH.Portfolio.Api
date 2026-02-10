@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { login, verifyToken } = require('../controllers/authController');
+const { protect } = require('../middleware/auth');
 
 /**
  * @swagger
@@ -71,6 +72,8 @@ router.post('/login', login);
  *   post:
  *     summary: Verify token (Mock)
  *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Token is valid
@@ -91,7 +94,9 @@ router.post('/login', login);
  *                     role:
  *                       type: string
  *                       example: admin
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
  */
-router.post('/verify', verifyToken);
+router.post('/verify', protect, verifyToken);
 
 module.exports = router;

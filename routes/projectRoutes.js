@@ -16,28 +16,26 @@ const {
  *     Project:
  *       type: object
  *       required:
- *         - title
+ *         - name
  *         - description
  *         - techStack
  *         - category
  *       properties:
  *         id:
- *           type: string
+ *           type: integer
  *           description: The auto-generated id of the project
- *         title:
+ *         name:
  *           type: string
- *           description: The title of the project
+ *           description: The name of the project
+ *         client:
+ *           type: string
+ *           description: The client name (optional)
  *         description:
  *           type: string
  *           description: The description of the project
  *         image:
  *           type: string
- *           description: The image URL of the project
- *         links:
- *           type: array
- *           items:
- *             type: string
- *           description: Array of project links (optional)
+ *           description: The image URL/path of the project
  *         techStack:
  *           type: array
  *           items:
@@ -45,15 +43,27 @@ const {
  *           description: Array of technologies used
  *         category:
  *           type: string
- *           description: The category of the project
+ *           description: Primary category for UI badge
+ *         categories:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Multiple categories for filtering
+ *         services:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Array of services provided
  *       example:
- *         id: 60d5ecb74b24c72b8c8b4567
- *         title: E-commerce Website
- *         description: A full-stack e-commerce platform
- *         image: https://example.com/project-image.jpg
- *         links: ["https://github.com/user/project", "https://demo.example.com"]
- *         techStack: ["React", "Node.js", "MongoDB"]
- *         category: Web Development
+ *         id: 1
+ *         name: Numazu Halal Food
+ *         client: Numazu Japan
+ *         description: A cross-platform shopping ecosystem
+ *         image: /uploads/project-1.jpg
+ *         techStack: [".NET", "React", "Flutter"]
+ *         category: Web Applications
+ *         categories: ["Web Applications", "Mobile Applications"]
+ *         services: ["E-commerce", "Mobile App"]
  */
 
 /**

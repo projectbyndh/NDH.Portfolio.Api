@@ -31,12 +31,7 @@ const Blog = sequelize.define('Blog', {
   },
   image: {
     type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: 'Image URL is required'
-      }
-    }
+    allowNull: true
   },
   description: {
     type: DataTypes.TEXT,

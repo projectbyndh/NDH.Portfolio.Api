@@ -60,8 +60,8 @@ router.post('/image', upload.single('image'), (req, res) => {
       });
     }
 
-    // Return the Cloudinary URL
-    const imageUrl = req.file.path; // Cloudinary URL
+    // Cloudinary returns the full URL in req.file.path
+    const imageUrl = req.file.path;
 
     res.status(200).json({
       success: true,
@@ -70,8 +70,7 @@ router.post('/image', upload.single('image'), (req, res) => {
         imageUrl: imageUrl,
         filename: req.file.filename,
         originalName: req.file.originalname,
-        size: req.file.size,
-        cloudinaryId: req.file.filename // Cloudinary public ID
+        size: req.file.size
       }
     });
 
@@ -150,13 +149,12 @@ router.post('/images', upload.array('images', 10), (req, res) => {
       });
     }
 
-    // Return array of Cloudinary URLs
+    // Cloudinary returns full URLs in file.path
     const images = req.files.map(file => ({
-      imageUrl: file.path, // Cloudinary URL
+      imageUrl: file.path,
       filename: file.filename,
       originalName: file.originalname,
-      size: file.size,
-      cloudinaryId: file.filename // Cloudinary public ID
+      size: file.size
     }));
 
     res.status(200).json({

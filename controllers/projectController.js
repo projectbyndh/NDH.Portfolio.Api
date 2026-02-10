@@ -72,19 +72,19 @@ exports.createProject = async (req, res) => {
   try {
     // Parse JSON fields from body
     const projectData = {
-      title: req.body.title,
+      name: req.body.name,
+      client: req.body.client,
       description: req.body.description,
-      techStack: req.body.techStack ? JSON.parse(req.body.techStack) : [],
       category: req.body.category,
-      links: req.body.links ? JSON.parse(req.body.links) : []
+      techStack: req.body.techStack ? (typeof req.body.techStack === 'string' ? JSON.parse(req.body.techStack) : req.body.techStack) : [],
+      categories: req.body.categories ? (typeof req.body.categories === 'string' ? JSON.parse(req.body.categories) : req.body.categories) : [],
+      services: req.body.services ? (typeof req.body.services === 'string' ? JSON.parse(req.body.services) : req.body.services) : []
     };
 
-    // If image was uploaded, add the file path
+    // If image was uploaded, add the Cloudinary URL
     if (req.file) {
-      // Store relative path that can be served by express.static
-      projectData.image = `/uploads/${req.file.filename}`;
+      projectData.image = req.file.path;
     } else if (req.body.image) {
-      // Allow direct URL if no file uploaded (for external images)
       projectData.image = req.body.image;
     }
 
@@ -96,16 +96,6 @@ exports.createProject = async (req, res) => {
       data: project
     });
   } catch (error) {
-    // If there was an error and a file was uploaded, delete it
-    if (req.file) {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(__dirname, '../uploads', req.file.filename);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
-
     res.status(400).json({
       success: false,
       message: 'Failed to create project',
@@ -121,16 +111,6 @@ exports.updateProject = async (req, res) => {
     const existingProject = await Project.findByPk(req.params.id);
 
     if (!existingProject) {
-      // If file was uploaded but project doesn't exist, delete the file
-      if (req.file) {
-        const fs = require('fs');
-        const path = require('path');
-        const filePath = path.join(__dirname, '../uploads', req.file.filename);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      }
-
       return res.status(404).json({
         success: false,
         message: 'Project not found'
@@ -139,36 +119,34 @@ exports.updateProject = async (req, res) => {
 
     // Prepare update data
     const updateData = {
-      title: req.body.title || existingProject.title,
+      name: req.body.name || existingProject.name,
+      client: req.body.client || existingProject.client,
       description: req.body.description || existingProject.description,
       category: req.body.category || existingProject.category
     };
 
-    // Parse arrays if provided as strings
+    // Parse arrays if provided
     if (req.body.techStack) {
       updateData.techStack = typeof req.body.techStack === 'string'
         ? JSON.parse(req.body.techStack)
         : req.body.techStack;
     }
 
-    if (req.body.links) {
-      updateData.links = typeof req.body.links === 'string'
-        ? JSON.parse(req.body.links)
-        : req.body.links;
+    if (req.body.categories) {
+      updateData.categories = typeof req.body.categories === 'string'
+        ? JSON.parse(req.body.categories)
+        : req.body.categories;
+    }
+
+    if (req.body.services) {
+      updateData.services = typeof req.body.services === 'string'
+        ? JSON.parse(req.body.services)
+        : req.body.services;
     }
 
     // Handle image update
     if (req.file) {
-      // Delete old image file if it exists in uploads folder
-      if (existingProject.image && existingProject.image.startsWith('/uploads/')) {
-        const fs = require('fs');
-        const path = require('path');
-        const oldFilePath = path.join(__dirname, '..', existingProject.image);
-        if (fs.existsSync(oldFilePath)) {
-          fs.unlinkSync(oldFilePath);
-        }
-      }
-      updateData.image = `/uploads/${req.file.filename}`;
+      updateData.image = req.file.path;
     } else if (req.body.image) {
       updateData.image = req.body.image;
     }
@@ -181,16 +159,6 @@ exports.updateProject = async (req, res) => {
       data: existingProject
     });
   } catch (error) {
-    // If there was an error and a new file was uploaded, delete it
-    if (req.file) {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(__dirname, '../uploads', req.file.filename);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
-
     res.status(400).json({
       success: false,
       message: 'Failed to update project',
@@ -209,16 +177,6 @@ exports.deleteProject = async (req, res) => {
         success: false,
         message: 'Project not found'
       });
-    }
-
-    // Delete associated image file if it exists in uploads folder
-    if (project.image && project.image.startsWith('/uploads/')) {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(__dirname, '..', project.image);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
     }
 
     await project.destroy();

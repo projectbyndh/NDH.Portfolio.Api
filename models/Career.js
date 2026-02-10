@@ -27,12 +27,7 @@ const Career = sequelize.define('Career', {
   },
   image: {
     type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: 'Image URL is required'
-      }
-    }
+    allowNull: true
   },
   requirements: {
     type: DataTypes.ARRAY(DataTypes.TEXT),
@@ -58,6 +53,17 @@ const Career = sequelize.define('Career', {
     validate: {
       notEmpty: {
         msg: 'Location is required'
+      }
+    }
+  },
+  category: {
+    type: DataTypes.ENUM('CTO', 'CEO', 'CFO', 'Senior Developer', 'Developer', 'Intern'),
+    allowNull: false,
+    defaultValue: 'Developer',
+    validate: {
+      isIn: {
+        args: [['CTO', 'CEO', 'CFO', 'Senior Developer', 'Developer', 'Intern']],
+        msg: "Category must be one of: CTO, CEO, CFO, Senior Developer, Developer, Intern"
       }
     }
   }

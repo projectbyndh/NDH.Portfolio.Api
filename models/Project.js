@@ -7,14 +7,18 @@ const Project = sequelize.define('Project', {
     primaryKey: true,
     autoIncrement: true
   },
-  title: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
       notEmpty: {
-        msg: 'Title is required'
+        msg: 'Project name is required'
       }
     }
+  },
+  client: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   description: {
     type: DataTypes.TEXT,
@@ -29,27 +33,21 @@ const Project = sequelize.define('Project', {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  links: {
-    type: DataTypes.ARRAY(DataTypes.TEXT),
-    defaultValue: []
-  },
   techStack: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: 'Tech stack is required'
-      }
-    }
+    defaultValue: []
   },
   category: {
     type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: 'Category is required'
-      }
-    }
+    allowNull: false
+  },
+  categories: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    defaultValue: []
+  },
+  services: {
+    type: DataTypes.ARRAY(DataTypes.TEXT),
+    defaultValue: []
   }
 }, {
   tableName: 'projects',

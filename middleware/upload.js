@@ -1,6 +1,6 @@
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 // Configure Cloudinary storage
 const storage = new CloudinaryStorage({
@@ -8,7 +8,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'ndh-portfolio', // Folder name in Cloudinary
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    transformation: [{ width: 1920, height: 1080, crop: 'limit' }], // Max dimensions
+    transformation: [{ width: 1200, height: 800, crop: 'limit' }], // Optional: resize images
   },
 });
 
@@ -24,7 +24,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer configuration with Cloudinary
+// Multer configuration
 const upload = multer({
   storage: storage,
   limits: {

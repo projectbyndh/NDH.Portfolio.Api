@@ -65,21 +65,14 @@ exports.login = async (req, res) => {
  */
 exports.verifyToken = async (req, res) => {
     try {
-        // In a real app, this would use middleware to verify token from header
-        // Here we just return success if the endpoint is reached, assuming client sent a token
-        // For a proper implementation, we should check req.headers.authorization
-
-        // For now, mirroring the frontend's expectation of a simple 'success: true'
-        // if the token is valid (which would be handled by middleware usually)
-
+        // req.user is populated by the 'protect' middleware after verification
         res.status(200).json({
             success: true,
             user: {
-                username: 'admin',
-                role: 'admin'
+                username: req.user.username || 'admin',
+                role: req.user.role || 'admin'
             }
         });
-
     } catch (error) {
         res.status(401).json({
             success: false,

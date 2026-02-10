@@ -50,10 +50,16 @@ exports.createService = async (req, res) => {
   try {
     // Handle logo upload
     if (req.file) {
-      req.body.logo = `/uploads/${req.file.filename}`;
-    } else if (req.body.logo) {
-      // Allow direct URL if no file uploaded (for external logos)
-      // req.body.logo remains as is
+      req.body.logo = req.file.path; // Cloudinary URL
+    }
+
+    // Parse capabilities if it's a string
+    if (typeof req.body.capabilities === 'string') {
+      try {
+        req.body.capabilities = JSON.parse(req.body.capabilities);
+      } catch (e) {
+        req.body.capabilities = req.body.capabilities.split(',').map(s => s.trim());
+      }
     }
 
     const service = await Service.create(req.body);
@@ -64,15 +70,6 @@ exports.createService = async (req, res) => {
       data: service
     });
   } catch (error) {
-    // If there was an error and a file was uploaded, delete it
-    if (req.file) {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(__dirname, '../uploads', req.file.filename);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
     res.status(400).json({
       success: false,
       message: 'Failed to create service',
@@ -86,10 +83,16 @@ exports.updateService = async (req, res) => {
   try {
     // Handle logo upload
     if (req.file) {
-      req.body.logo = `/uploads/${req.file.filename}`;
-    } else if (req.body.logo) {
-      // Allow direct URL if no file uploaded (for external logos)
-      // req.body.logo remains as is
+      req.body.logo = req.file.path; // Cloudinary URL
+    }
+
+    // Parse capabilities if it's a string
+    if (typeof req.body.capabilities === 'string') {
+      try {
+        req.body.capabilities = JSON.parse(req.body.capabilities);
+      } catch (e) {
+        req.body.capabilities = req.body.capabilities.split(',').map(s => s.trim());
+      }
     }
 
     const service = await Service.findByPk(req.params.id);
@@ -109,15 +112,6 @@ exports.updateService = async (req, res) => {
       data: service
     });
   } catch (error) {
-    // If there was an error and a file was uploaded, delete it
-    if (req.file) {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(__dirname, '../uploads', req.file.filename);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
     res.status(400).json({
       success: false,
       message: 'Failed to update service',

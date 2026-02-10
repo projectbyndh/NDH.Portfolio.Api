@@ -13,7 +13,6 @@ const controllersToUpdate = [
     'partnerController.js',
     'projectController.js',
     'serviceController.js',
-    'teamController.js',
     'testimonialController.js'
 ];
 

@@ -18,12 +18,7 @@ const Partner = sequelize.define('Partner', {
   },
   image: {
     type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: 'Partner image URL is required'
-      }
-    }
+    allowNull: true
   }
 }, {
   tableName: 'partners',

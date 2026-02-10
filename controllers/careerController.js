@@ -48,9 +48,25 @@ exports.getCareerById = async (req, res) => {
 // Create career
 exports.createCareer = async (req, res) => {
   try {
-    // Handle image upload
+    // Handle image upload from Cloudinary
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path; // Cloudinary returns the full URL in file.path
+    }
+
+    // Parse JSON fields from body if they are strings (when using FormData)
+    if (typeof req.body.requirements === 'string') {
+      try {
+        req.body.requirements = JSON.parse(req.body.requirements);
+      } catch (e) {
+        req.body.requirements = req.body.requirements.split(',').map(s => s.trim());
+      }
+    }
+    if (typeof req.body.responsibilities === 'string') {
+      try {
+        req.body.responsibilities = JSON.parse(req.body.responsibilities);
+      } catch (e) {
+        req.body.responsibilities = req.body.responsibilities.split(',').map(s => s.trim());
+      }
     }
 
     const career = await Career.create(req.body);
@@ -72,9 +88,25 @@ exports.createCareer = async (req, res) => {
 // Update career
 exports.updateCareer = async (req, res) => {
   try {
-    // Handle image upload
+    // Handle image upload from Cloudinary
     if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
+      req.body.image = req.file.path; // Cloudinary returns the full URL in file.path
+    }
+
+    // Parse JSON fields from body if they are strings (when using FormData)
+    if (typeof req.body.requirements === 'string') {
+      try {
+        req.body.requirements = JSON.parse(req.body.requirements);
+      } catch (e) {
+        req.body.requirements = req.body.requirements.split(',').map(s => s.trim());
+      }
+    }
+    if (typeof req.body.responsibilities === 'string') {
+      try {
+        req.body.responsibilities = JSON.parse(req.body.responsibilities);
+      } catch (e) {
+        req.body.responsibilities = req.body.responsibilities.split(',').map(s => s.trim());
+      }
     }
 
     const career = await Career.findByPk(req.params.id);

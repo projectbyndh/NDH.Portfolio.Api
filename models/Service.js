@@ -28,6 +28,14 @@ const Service = sequelize.define('Service', {
         msg: 'Description is required'
       }
     }
+  },
+  tagline: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  capabilities: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    defaultValue: []
   }
 }, {
   tableName: 'services',
