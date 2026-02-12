@@ -37,8 +37,26 @@ app.use('/api', limiter);
 app.use(express.json({ limit: '10mb' }));          // ← JSON bodies (most common cause)
 app.use(express.urlencoded({ limit: '10mb', extended: true }));  // ← form data
 
-// CORS after body parsers is fine
-app.use(cors());
+// CORS Configuration
+const allowedOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:5173'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -116,5 +134,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`📄 Swagger Docs available at http://localhost:${PORT}/api-docs`);
+  console.log(`📄 Swagger Docs available at http://localhost:${PORT}/swagger`);
 });
