@@ -37,6 +37,16 @@ app.use('/api', limiter);
 app.use(express.json({ limit: '10mb' }));          // ← JSON bodies (most common cause)
 app.use(express.urlencoded({ limit: '10mb', extended: true }));  // ← form data
 
+// Request logging middleware
+app.use((req, res, next) => {
+  const timestamp = new Date().toISOString();
+  console.log(`📥 [${timestamp}] ${req.method} ${req.path}`);
+  if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+    console.log(`📦 Body:`, JSON.stringify(req.body).substring(0, 200));
+  }
+  next();
+});
+
 // CORS Configuration
 const allowedOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
@@ -81,7 +91,7 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.get('/', (req, res) => {
@@ -113,8 +123,10 @@ app.get('/api/health', (req, res) => res.json({
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('❌ Global Error:', err.message);
-  if (err.stack) console.error(err.stack);
+  const timestamp = new Date().toISOString();
+  console.error(`❌ [${timestamp}] Error on ${req.method} ${req.path}`);
+  console.error('❌ Error Message:', err.message);
+  if (err.stack) console.error('📋 Stack Trace:', err.stack);
 
   if (err.type === 'entity.too.large') {
     return res.status(413).json({
@@ -123,7 +135,7 @@ app.use((err, req, res, next) => {
     });
   }
 
-  res.status(500).json({
+  res.status(err.status || 500).json({
     error: 'Something went wrong!',
     message: err.message,
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
@@ -133,6 +145,10 @@ app.use((err, req, res, next) => {
 // Port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`📄 Swagger Docs available at http://localhost:${PORT}/swagger`);
+  console.log('🚀 ======================================');
+  console.log(`🌐 Server is running on http://localhost:${PORT}`);
+  console.log(`📄 Swagger: http://localhost:${PORT}/swagger`);
+  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📊 Database: ${process.env.DB_NAME}`);
+  console.log('🚀 ======================================');
 });

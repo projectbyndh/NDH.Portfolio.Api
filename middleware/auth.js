@@ -13,7 +13,8 @@ exports.protect = async (req, res, next) => {
     }
 
     if (!token) {
-        console.warn('⚡ Auth failed: No token provided in headers');
+        console.warn('⚠️  Auth failed: No token provided');
+        console.log('📍 Path:', req.path);
         return res.status(401).json({
             success: false,
             message: 'No authentication token provided'
@@ -21,12 +22,15 @@ exports.protect = async (req, res, next) => {
     }
 
     try {
+        console.log('🔐 Verifying JWT token...');
         // Verify token
         const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
+        console.log('✅ Token verified for user:', decoded.email || decoded.id);
         next();
     } catch (err) {
         console.error('❌ JWT Verification Error:', err.message);
+        console.log('📍 Path:', req.path);
         return res.status(401).json({
             success: false,
             message: 'Invalid or expired token'
