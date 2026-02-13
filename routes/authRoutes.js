@@ -10,12 +10,12 @@ const { protect } = require('../middleware/auth');
  *     LoginRequest:
  *       type: object
  *       required:
- *         - username
+ *         - email
  *         - password
  *       properties:
- *         username:
+ *         email:
  *           type: string
- *           description: Admin username/email
+ *           description: Admin email
  *           example: admin.ndh@gmail.com
  *         password:
  *           type: string
@@ -34,7 +34,7 @@ const { protect } = require('../middleware/auth');
  *         user:
  *           type: object
  *           properties:
- *             username:
+ *             email:
  *               type: string
  *             role:
  *               type: string
@@ -88,7 +88,7 @@ router.post('/login', login);
  *                 user:
  *                   type: object
  *                   properties:
- *                     username:
+ *                     email:
  *                       type: string
  *                       example: admin.ndh@gmail.com
  *                     role:

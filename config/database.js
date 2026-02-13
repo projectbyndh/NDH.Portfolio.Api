@@ -29,6 +29,10 @@ const sequelize = new Sequelize(
 // Test database connection
 const connectDB = async () => {
     try {
+        console.log('🔌 Connecting to PostgreSQL database...');
+        console.log(`📊 Database: ${process.env.DB_NAME}`);
+        console.log(`🖥️  Host: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+        
         await sequelize.authenticate();
         console.log('✅ PostgreSQL Database connected successfully');
 
@@ -39,6 +43,7 @@ const connectDB = async () => {
         console.log('✅ Database models synchronized');
     } catch (error) {
         console.error('❌ Unable to connect to the database:', error.message);
+        console.error('📋 Error details:', error);
         process.exit(1);
     }
 };

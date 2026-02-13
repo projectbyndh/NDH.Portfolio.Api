@@ -4,15 +4,18 @@ const { sendContactNotification } = require('../services/emailService');
 // Get all contact submissions
 exports.getAllContacts = async (req, res) => {
   try {
+    console.log('📧 Fetching all contact submissions...');
     const contacts = await Contact.findAll({
       order: [['createdAt', 'DESC']]
     });
+    console.log(`✅ Retrieved ${contacts.length} contact submissions`);
     res.status(200).json({
       success: true,
       count: contacts.length,
       data: contacts
     });
   } catch (error) {
+    console.error('❌ Error fetching contacts:', error.message);
     res.status(500).json({
       success: false,
       message: 'Server Error',
@@ -49,10 +52,17 @@ exports.getContactById = async (req, res) => {
 // Create contact submission
 exports.createContact = async (req, res) => {
   try {
+    console.log('📨 New contact submission received');
+    console.log('👤 From:', req.body.name, '-', req.body.email);
+    
     const contact = await Contact.create(req.body);
+    console.log('✅ Contact submission saved with ID:', contact.id);
 
     // Send email notification asynchronously (don't await to keep response fast)
-    sendContactNotification(contact).catch(err => console.error('Email notification failed:', err));
+    console.log('📧 Sending email notification...');
+    sendContactNotification(contact)
+      .then(() => console.log('✅ Email notification sent successfully'))
+      .catch(err => console.error('❌ Email notification failed:', err.message));
 
     res.status(201).json({
       success: true,
@@ -60,6 +70,7 @@ exports.createContact = async (req, res) => {
       data: contact
     });
   } catch (error) {
+    console.error('❌ Error creating contact submission:', error.message);
     res.status(400).json({
       success: false,
       message: 'Failed to submit contact form',
