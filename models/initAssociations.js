@@ -3,6 +3,9 @@ const LeadershipLayer = require('./LeadershipLayer');
 const Team = require('./Team');
 const Career = require('./Career');
 const CareerApplication = require('./CareerApplication');
+const Course = require('./Course');
+const Batch = require('./Batch');
+const Enrollment = require('./Enrollment');
 
 const initAssociations = () => {
     // LeadershipLayer <-> Role (REMOVED - using simplified structure without roles)
@@ -35,7 +38,39 @@ const initAssociations = () => {
     });
     CareerApplication.belongsTo(Career, {
         foreignKey: 'careerId',
-        as: 'career' // Alias
+    });
+
+    // Course <-> Batch
+    Course.hasMany(Batch, {
+        foreignKey: 'courseId',
+        as: 'batches',
+        onDelete: 'CASCADE'
+    });
+    Batch.belongsTo(Course, {
+        foreignKey: 'courseId',
+        as: 'course'
+    });
+
+    // Course <-> Enrollment
+    Course.hasMany(Enrollment, {
+        foreignKey: 'courseId',
+        as: 'enrollments',
+        onDelete: 'CASCADE'
+    });
+    Enrollment.belongsTo(Course, {
+        foreignKey: 'courseId',
+        as: 'course'
+    });
+
+    // Batch <-> Enrollment
+    Batch.hasMany(Enrollment, {
+        foreignKey: 'batchId',
+        as: 'enrollments',
+        onDelete: 'SET NULL' // Keep enrollment record even if batch is deleted
+    });
+    Enrollment.belongsTo(Batch, {
+        foreignKey: 'batchId',
+        as: 'batch'
     });
 };
 

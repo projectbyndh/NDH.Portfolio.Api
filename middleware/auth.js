@@ -38,6 +38,31 @@ exports.protect = async (req, res, next) => {
     }
 };
 
+
+exports.optionalProtect = async (req, res, next) => {
+    let token;
+
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith('Bearer')
+    ) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+        return next();
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        // If token invalid, proceed as guest
+        next();
+    }
+};
+
 exports.authorize = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
