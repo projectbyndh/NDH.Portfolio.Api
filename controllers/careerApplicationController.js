@@ -171,7 +171,7 @@ exports.exportToExcel = async (req, res) => {
         worksheet.getRow(1).fill = {
             type: 'pattern',
             pattern: 'solid',
-            fgColor: { argb: 'FF4A8EBC' }
+            fgColor: { argb: 'FF084281' }
         };
         worksheet.getRow(1).font = { color: { argb: 'FFFFFFFF' }, bold: true };
 
@@ -196,7 +196,7 @@ exports.exportToExcel = async (req, res) => {
                     text: 'View CV',
                     hyperlink: cell.value
                 };
-                cell.font = { color: { argb: 'FF0000FF' }, underline: true };
+                cell.font = { color: { argb: 'FF26A8DF' }, underline: true };
             }
         });
 

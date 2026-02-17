@@ -11,6 +11,9 @@ const Project = require('./Project');
 const Service = require('./Service');
 const Team = require('./Team');
 const Testimonial = require('./Testimonial');
+const Course = require('./Course');
+const Batch = require('./Batch');
+const Enrollment = require('./Enrollment');
 
 module.exports = {
     Blog,
@@ -24,5 +27,8 @@ module.exports = {
     // Role, // Removed - using simplified team structure
     Service,
     Team,
-    Testimonial
+    Testimonial,
+    Course,
+    Batch,
+    Enrollment
 };

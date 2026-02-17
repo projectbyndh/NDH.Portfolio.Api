@@ -42,13 +42,19 @@ app.use((req, res, next) => {
   const timestamp = new Date().toISOString();
   console.log(`📥 [${timestamp}] ${req.method} ${req.path}`);
   if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
-    console.log(`📦 Body:`, JSON.stringify(req.body).substring(0, 200));
+    if (req.body) {
+      try {
+        console.log(`📦 Body:`, JSON.stringify(req.body).substring(0, 200));
+      } catch (e) {
+        console.log(`📦 Body: [Circular or Non-Serializable]`);
+      }
+    }
   }
   next();
 });
 
 // CORS Configuration
-const allowedOrigins = process.env.CORS_ORIGINS 
+const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
   : ['http://localhost:5173'];
 
@@ -56,16 +62,17 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
+
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('localhost') || origin.includes('127.0.0.1')) {
       callback(null, true);
     } else {
+      console.log('🚫 CORS Blocked Origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'X-Requested-With', 'Accept', 'Expires', 'Pragma']
 }));
 
 // Serve static files from uploads directory
@@ -112,6 +119,9 @@ app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
 app.use('/api/team-structure', require('./routes/teamStructureRoutesSimplified'));
 app.use('/api/testimonials', require('./routes/testimonialRoutes'));
+app.use('/api/courses', require('./routes/courseRoutes'));
+app.use('/api/batches', require('./routes/batchRoutes'));
+app.use('/api/enrollments', require('./routes/enrollmentRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
 
 // Connectivity & Health Check
