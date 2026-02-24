@@ -20,6 +20,31 @@ exports.getAllCategories = async (req, res) => {
     }
 };
 
+// Get single category
+exports.getCategoryById = async (req, res) => {
+    try {
+        const category = await Category.findByPk(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({
+                success: false,
+                message: 'Category not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: category
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error',
+            error: error.message
+        });
+    }
+};
+
 // Create category
 exports.createCategory = async (req, res) => {
     try {

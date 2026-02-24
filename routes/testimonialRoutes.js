@@ -101,7 +101,7 @@ router.route('/')
 
     /**
      * @swagger
-     * /api/testimonials:
+     * /api/testimonials/create:
      *   post:
      *     summary: Create a new testimonial
      *     tags: [Testimonials]
@@ -156,8 +156,11 @@ router.route('/')
      *                   $ref: '#/components/schemas/Testimonial'
      *       400:
      *         description: Bad request
-     */
-    .post(upload.single('image'), createTestimonial);
+    */
+    ;
+
+// Route for creating a testimonial
+router.post('/create', upload.single('image'), createTestimonial);
 
 /**
  * @swagger

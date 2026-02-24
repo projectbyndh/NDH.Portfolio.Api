@@ -70,7 +70,7 @@ router.route('/')
 
 /**
  * @swagger
- * /api/services:
+ * /api/services/create:
  *   post:
  *     summary: Create a new service
  *     tags: [Services]
@@ -117,7 +117,10 @@ router.route('/')
  *       400:
  *         description: Bad request
  */
-  .post(upload.single('logo'), createService);
+  ;
+
+// Route for creating a service
+router.post('/create', upload.single('logo'), createService);
 
 /**
  * @swagger

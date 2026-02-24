@@ -98,7 +98,7 @@ router.route('/')
 
   /**
    * @swagger
-   * /api/projects:
+   * /api/projects/create:
    *   post:
    *     summary: Create a new project (supports JSON + image upload)
    *     tags: [Projects]
@@ -154,7 +154,10 @@ router.route('/')
    *       400:
    *         description: Bad request
    */
-  .post(upload.single('image'), createProject);
+  ;
+
+// Route for creating a project
+router.post('/create', upload.single('image'), createProject);
 
 
 

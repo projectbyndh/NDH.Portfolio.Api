@@ -12,7 +12,7 @@ const { protect, optionalProtect } = require('../middleware/auth');
 router.get('/', optionalProtect, getBatchesByCourse); // Allows viewing all batches if admin token present
 
 // Admin
-router.post('/', protect, createBatch);
+router.post('/create', protect, createBatch);
 router.put('/:id', protect, updateBatch);
 router.delete('/:id', protect, deleteBatch);
 

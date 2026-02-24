@@ -15,7 +15,7 @@ router.get('/', getAllCourses);
 router.get('/:slug', getCourseBySlug);
 
 // Protected Routes (Admin)
-router.post('/', protect, createCourse);
+router.post('/create', protect, createCourse);
 router.put('/:id', protect, updateCourse);
 router.delete('/:id', protect, deleteCourse);
 

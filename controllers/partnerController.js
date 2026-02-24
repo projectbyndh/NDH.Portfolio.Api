@@ -20,6 +20,28 @@ exports.getAllPartners = async (req, res) => {
   }
 };
 
+// Get partners section (only id, name, image)
+exports.getPartnersSection = async (req, res) => {
+  try {
+    const partners = await Partner.findAll({
+      attributes: ['id', 'name', 'image'],
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).json({
+      success: true,
+      count: partners.length,
+      data: partners
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+      error: error.message
+    });
+  }
+};
+
 // Get single partner
 exports.getPartnerById = async (req, res) => {
   try {

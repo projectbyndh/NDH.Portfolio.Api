@@ -8,6 +8,7 @@ const {
   deletePartner
 } = require('../controllers/partnerController');
 const upload = require('../middleware/upload');
+const { getPartnersSection } = require('../controllers/partnerController');
 
 /**
  * @swagger
@@ -66,7 +67,7 @@ router.route('/')
 
 /**
  * @swagger
- * /api/partners:
+ * /api/partners/create:
  *   post:
  *     summary: Create a new partner
  *     tags: [Partners]
@@ -109,7 +110,46 @@ router.route('/')
  *       400:
  *         description: Bad request
  */
-  .post(upload.single('image'), createPartner);
+  ;
+
+// Route for creating a partner
+router.post('/create', upload.single('image'), createPartner);
+
+/**
+ * @swagger
+ * /api/partners/section:
+ *   get:
+ *     summary: Get partners for partners section (only id, name, image)
+ *     tags: [Partners]
+ *     responses:
+ *       200:
+ *         description: List of partners (id, name, image)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: integer
+ *                   example: 3
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       image:
+ *                         type: string
+ *       500:
+ *         description: Server error
+ */
+router.get('/section', getPartnersSection);
 
 /**
  * @swagger

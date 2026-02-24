@@ -68,6 +68,39 @@ router.post('/login', login);
 
 /**
  * @swagger
+ * /api/auth/seed:
+ *   post:
+ *     summary: Return seeded admin credentials and JWT (development only)
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Seeded credentials and token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 seeded:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     password:
+ *                       type: string
+ *                 token:
+ *                   type: string
+ *       403:
+ *         description: Seeding disabled in production
+ */
+// Note: seed route removed — login will return seeded credentials in development when enabled.
+
+/**
+ * @swagger
  * /api/auth/verify:
  *   post:
  *     summary: Verify token (Mock)

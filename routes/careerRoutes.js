@@ -95,7 +95,7 @@ router.route('/')
 
 /**
  * @swagger
- * /api/careers:
+ * /api/careers/create:
  *   post:
  *     summary: Create a new career
  *     tags: [Careers]
@@ -167,7 +167,10 @@ router.route('/')
  *       400:
  *         description: Bad request
  */
-  .post(upload.single('image'), createCareer);
+  ;
+
+// Route for creating a career
+router.post('/create', upload.single('image'), createCareer);
 
 /**
  * @swagger

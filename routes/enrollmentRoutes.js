@@ -8,7 +8,7 @@ const {
 const { protect } = require('../middleware/auth');
 
 // Public
-router.post('/', createEnrollment);
+router.post('/create', createEnrollment);
 
 // Admin
 router.get('/', protect, getAllEnrollments);
