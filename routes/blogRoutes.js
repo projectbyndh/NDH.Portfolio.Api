@@ -81,7 +81,7 @@ router.route('/')
 
 /**
  * @swagger
- * /api/blogs:
+ * /api/blogs/create:
  *   post:
  *     summary: Create a new blog
  *     tags: [Blogs]
@@ -134,7 +134,10 @@ router.route('/')
  *       400:
  *         description: Bad request
  */
-  .post(upload.single('image'), createBlog);
+  ;
+
+// Route for creating a blog
+router.post('/create', upload.single('image'), createBlog);
 
 /**
  * @swagger

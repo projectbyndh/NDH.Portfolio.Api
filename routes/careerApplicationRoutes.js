@@ -11,7 +11,7 @@ const {
 const cvUpload = require('../middleware/cvUpload');
 
 // Public route - Submit application with CV
-router.post('/', cvUpload.single('cv'), createApplication);
+router.post('/create', cvUpload.single('cv'), createApplication);
 
 // Admin routes - Get all applications
 router.get('/', getAllApplications);

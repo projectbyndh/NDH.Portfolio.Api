@@ -65,7 +65,7 @@ router.route('/')
 
 /**
  * @swagger
- * /api/faqs:
+ * /api/faqs/create:
  *   post:
  *     summary: Create a new FAQ
  *     tags: [FAQs]
@@ -97,7 +97,10 @@ router.route('/')
  *       400:
  *         description: Bad request
  */
-  .post(createFAQ);
+  ;
+
+// Route for creating an FAQ
+router.post('/create', createFAQ);
 
 /**
  * @swagger

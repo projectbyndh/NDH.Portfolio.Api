@@ -76,7 +76,7 @@ router.route('/')
 
 /**
  * @swagger
- * /api/team:
+ * /api/team/create:
  *   post:
  *     summary: Create a new team member
  *     tags: [Team]
@@ -129,7 +129,10 @@ router.route('/')
  *       400:
  *         description: Bad request
  */
-  .post(upload.single('image'), createTeamMember);
+  ;
+
+// Route for creating a team member
+router.post('/create', upload.single('image'), createTeamMember);
 
 /**
  * @swagger

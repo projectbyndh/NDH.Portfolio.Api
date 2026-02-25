@@ -85,7 +85,7 @@ router.route('/')
 
 /**
  * @swagger
- * /api/contacts:
+ * /api/contacts/create:
  *   post:
  *     summary: Create a new contact
  *     tags: [Contacts]
@@ -121,7 +121,10 @@ router.route('/')
  *       400:
  *         description: Bad request
  */
-  .post(createContact);
+  ;
+
+// Route for creating a contact
+router.post('/create', createContact);
 
 /**
  * @swagger

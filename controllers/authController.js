@@ -52,14 +52,26 @@ exports.login = async (req, res) => {
         console.log('✅ Login successful for:', email);
         console.log('🎟️  Token generated successfully');
         
-        res.status(200).json({
+        const includeSeed = (process.env.NODE_ENV === 'development' || process.env.ALLOW_AUTH_SEED === 'true');
+
+        const baseResponse = {
             success: true,
             token,
             user: {
                 email: ADMIN_CREDENTIALS.email,
                 role: 'admin'
             }
-        });
+        };
+
+        if (includeSeed) {
+            baseResponse.seeded = {
+                id: 'admin',
+                email: ADMIN_CREDENTIALS.email,
+                password: ADMIN_CREDENTIALS.password
+            };
+        }
+
+        res.status(200).json(baseResponse);
     } catch (error) {
         console.error('❌ Login error:', error.message);
         console.error('Stack:', error.stack);
@@ -97,3 +109,10 @@ exports.verifyToken = async (req, res) => {
         });
     }
 };
+
+/**
+ * @desc    Seed admin credentials (development only)
+ * @route   POST /api/auth/seed
+ * @access  Public (dev only)
+ */
+// Note: seeded endpoint removed; login will return seeded credentials in development when appropriate.
