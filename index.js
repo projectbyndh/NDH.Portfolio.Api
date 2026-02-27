@@ -53,24 +53,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS Configuration
-const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:5173'];
-
+// CORS Configuration - set to allow all
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      callback(null, true);
-    } else {
-      console.log('🚫 CORS Blocked Origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: '*', 
+  credentials: true, // Note: some browsers require a specific origin instead of '*' when credentials is true
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'X-Requested-With', 'Accept', 'Expires', 'Pragma']
 }));
@@ -89,8 +75,13 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 5000}`,
-        description: 'Development server',
+        // Use your production domain here
+        url: process.env.APP_URL_PROD, 
+        description: 'Production Server',
+      },
+      {
+        url: process.env.APP_URL_LOCAL,
+        description: 'Local Development',
       },
     ],
   },
