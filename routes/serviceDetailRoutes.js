@@ -87,47 +87,47 @@ const {
 router.route('/')
     .get(getAllServiceDetails)
 
-    /**
-     * @swagger
-     * /api/service-details:
-     *   post:
-     *     summary: Create a new service detail record
-     *     tags: [ServiceDetails]
-     *     description: |
-     *       Creates a ServiceDetail linked to an existing Service via `serviceId`.
-     *       - `serviceId` must reference a valid Service; otherwise a 404 is returned.
-     *       - Only one ServiceDetail is allowed per Service (409 if duplicate).
-     *       - `expertise`, `features`, and `tools` accept a JSON array, comma-separated string, or JS array.
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/ServiceDetail'
-     *     responses:
-     *       201:
-     *         description: ServiceDetail created successfully
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 success:
-     *                   type: boolean
-     *                   example: true
-     *                 message:
-     *                   type: string
-     *                   example: Service detail created successfully
-     *                 data:
-     *                   $ref: '#/components/schemas/ServiceDetail'
-     *       400:
-     *         description: Validation error (missing required fields)
-     *       404:
-     *         description: Referenced Service not found
-     *       409:
-     *         description: A ServiceDetail already exists for this serviceId
-     */
-    .post(createServiceDetail);
+/**
+ * @swagger
+ * /api/service-details/create:
+ *   post:
+ *     summary: Create a new service detail record
+ *     tags: [ServiceDetails]
+ *     description: |
+ *       Creates a ServiceDetail linked to an existing Service via `serviceId`.
+ *       - `serviceId` must reference a valid Service; otherwise a 404 is returned.
+ *       - Only one ServiceDetail is allowed per Service (409 if duplicate).
+ *       - `expertise`, `features`, and `tools` accept a JSON array, comma-separated string, or JS array.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ServiceDetail'
+ *     responses:
+ *       201:
+ *         description: ServiceDetail created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Service detail created successfully
+ *                 data:
+ *                   $ref: '#/components/schemas/ServiceDetail'
+ *       400:
+ *         description: Validation error (missing required fields)
+ *       404:
+ *         description: Referenced Service not found
+ *       409:
+ *         description: A ServiceDetail already exists for this serviceId
+ */
+router.post('/create', createServiceDetail);
 
 /**
  * @swagger

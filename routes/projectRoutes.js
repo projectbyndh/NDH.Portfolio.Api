@@ -18,7 +18,6 @@ const {
  *       required:
  *         - name
  *         - description
- *         - techStack
  *         - category
  *       properties:
  *         id:
@@ -26,44 +25,35 @@ const {
  *           description: The auto-generated id of the project
  *         name:
  *           type: string
- *           description: The name of the project
  *         client:
  *           type: string
- *           description: The client name (optional)
  *         description:
  *           type: string
- *           description: The description of the project
  *         image:
  *           type: string
- *           description: The image URL/path of the project
+ *           description: URL/path to the project image
  *         techStack:
  *           type: array
  *           items:
  *             type: string
- *           description: Array of technologies used
  *         category:
  *           type: string
- *           description: Primary category for UI badge
  *         categories:
  *           type: array
  *           items:
  *             type: string
- *           description: Multiple categories for filtering
  *         services:
  *           type: array
  *           items:
  *             type: string
- *           description: Array of services provided
  *       example:
  *         id: 1
  *         name: Numazu Halal Food
  *         client: Numazu Japan
  *         description: A cross-platform shopping ecosystem
- *         image: /uploads/project-1.jpg
+ *         image: https://res.cloudinary.com/example/image/upload/v1/project.jpg
  *         techStack: [".NET", "React", "Flutter"]
  *         category: Web Applications
- *         categories: ["Web Applications", "Mobile Applications"]
- *         services: ["E-commerce", "Mobile App"]
  */
 
 /**
@@ -82,84 +72,57 @@ const {
  *               properties:
  *                 success:
  *                   type: boolean
- *                   example: true
  *                 count:
  *                   type: integer
- *                   example: 4
  *                 data:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Project'
- *       500:
- *         description: Server error
  */
 router.route('/')
-  .get(getAllProjects)
+  .get(getAllProjects);
 
-  /**
-   * @swagger
-   * /api/projects/create:
-   *   post:
-   *     summary: Create a new project (supports JSON + image upload)
-   *     tags: [Projects]
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         multipart/form-data:
-   *           schema:
-   *             type: object
-   *             required:
-   *               - title
-   *               - description
-   *               - techStack
-   *               - category
-   *             properties:
-   *               title:
-   *                 type: string
-   *                 example: Mobile Banking App
-   *               description:
-   *                 type: string
-   *                 example: A secure mobile banking application
-   *               image:
-   *                 type: string
-   *                 format: binary
-   *                 description: Upload image file (optional if providing image URL)
-   *               techStack:
-   *                 type: string
-   *                 example: '["React Native", "Firebase", "Stripe"]'
-   *                 description: JSON string array of technologies
-   *               category:
-   *                 type: string
-   *                 example: Mobile Development
-   *               links:
-   *                 type: string
-   *                 example: '["https://github.com/user/banking-app"]'
-   *                 description: JSON string array of links (optional)
-   *     responses:
-   *       201:
-   *         description: Project created successfully
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 success:
-   *                   type: boolean
-   *                   example: true
-   *                 message:
-   *                   type: string
-   *                   example: Project created successfully
-   *                 data:
-   *                   $ref: '#/components/schemas/Project'
-   *       400:
-   *         description: Bad request
-   */
-  ;
-
-// Route for creating a project
+/**
+ * @swagger
+ * /api/projects/create:
+ *   post:
+ *     summary: Create a new project
+ *     tags: [Projects]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - description
+ *             properties:
+ *               name:
+ *                 type: string
+ *               client:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *               techStack:
+ *                 type: string
+ *                 description: JSON array or comma-separated list
+ *               categories:
+ *                 type: string
+ *                 description: JSON array or comma-separated list
+ *               services:
+ *                 type: string
+ *                 description: JSON array or comma-separated list
+ *     responses:
+ *       201:
+ *         description: Project created
+ */
 router.post('/create', upload.single('image'), createProject);
-
-
 
 /**
  * @swagger
@@ -170,124 +133,66 @@ router.post('/create', upload.single('image'), createProject);
  *     parameters:
  *       - in: path
  *         name: id
- *         schema:
- *           type: string
  *         required: true
- *         description: The project ID
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Project retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   $ref: '#/components/schemas/Project'
+ *         description: Project found
  *       404:
  *         description: Project not found
- *       500:
- *         description: Server error
+ *   put:
+ *     summary: Update a project
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               client:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *               techStack:
+ *                 type: string
+ *               categories:
+ *                 type: string
+ *               services:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Project updated
+ *   delete:
+ *     summary: Delete a project
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Project deleted
  */
 router.route('/:id')
   .get(getProjectById)
-
-  /**
-   * @swagger
-   * /api/projects/{id}:
-   *   put:
-   *     summary: Update a project by ID (supports JSON + image upload)
-   *     tags: [Projects]
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         schema:
-   *           type: string
-   *         required: true
-   *         description: The project ID
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         multipart/form-data:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               title:
-   *                 type: string
-   *               description:
-   *                 type: string
-   *               image:
-   *                 type: string
-   *                 format: binary
-   *                 description: Upload new image file (optional)
-   *               techStack:
-   *                 type: string
-   *                 example: '["React", "Node.js"]'
-   *                 description: JSON string array of technologies
-   *               category:
-   *                 type: string
-   *               links:
-   *                 type: string
-   *                 example: '["https://demo.com"]'
-   *                 description: JSON string array of links
-   *     responses:
-   *       200:
-   *         description: Project updated successfully
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 success:
-   *                   type: boolean
-   *                   example: true
-   *                 message:
-   *                   type: string
-   *                   example: Project updated successfully
-   *                 data:
-   *                   $ref: '#/components/schemas/Project'
-   *       404:
-   *         description: Project not found
-   *       400:
-   *         description: Bad request
-   */
   .put(upload.single('image'), updateProject)
-
-  /**
-   * @swagger
-   * /api/projects/{id}:
-   *   delete:
-   *     summary: Delete a project by ID
-   *     tags: [Projects]
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         schema:
-   *           type: string
-   *         required: true
-   *         description: The project ID
-   *     responses:
-   *       200:
-   *         description: Project deleted successfully
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 success:
-   *                   type: boolean
-   *                   example: true
-   *                 message:
-   *                   type: string
-   *                   example: Project deleted successfully
-   *       404:
-   *         description: Project not found
-   *       500:
-   *         description: Server error
-   */
   .delete(deleteProject);
 
 module.exports = router;
