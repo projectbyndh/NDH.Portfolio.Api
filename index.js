@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+// Rate limiting removed as per request
 const { connectDB } = require('./config/database');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -22,16 +22,6 @@ app.use(helmet({
   crossOriginResourcePolicy: false, // Allow loading resources across origins (needed for images/PDFs from Cloudinary)
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 1000 : 100, // limit each IP to 100 requests per windowMs (1000 for dev)
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) => req.ip === '127.0.0.1' || req.ip === '::1' || req.ip === '::ffff:127.0.0.1'
-});
-app.use('/api', limiter);
 
 // ← VERY IMPORTANT: Body parsers FIRST, with increased limit
 app.use(express.json({ limit: '10mb' }));          // ← JSON bodies (most common cause)
@@ -55,8 +45,8 @@ app.use((req, res, next) => {
 
 // CORS Configuration - set to allow all
 app.use(cors({
-  origin: '*', 
-  credentials: true, // Note: some browsers require a specific origin instead of '*' when credentials is true
+  origin: process.env.CORS_ORIGINS === '*' ? true : process.env.CORS_ORIGINS,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'X-Requested-With', 'Accept', 'Expires', 'Pragma']
 }));
@@ -75,13 +65,12 @@ const swaggerOptions = {
     },
     servers: [
       {
-        // Use your production domain here
-        url: process.env.APP_URL_PROD, 
-        description: 'Production Server',
-      },
-      {
         url: process.env.APP_URL_LOCAL,
         description: 'Local Development',
+      },
+      {
+        url: process.env.APP_URL_PROD,
+        description: 'Production Server',
       },
     ],
   },
@@ -108,6 +97,7 @@ app.use('/api/faqs', require('./routes/faqRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
+app.use('/api/service-details', require('./routes/serviceDetailRoutes'));
 app.use('/api/team-structure', require('./routes/teamStructureRoutesSimplified'));
 app.use('/api/testimonials', require('./routes/testimonialRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));

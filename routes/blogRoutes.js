@@ -22,7 +22,7 @@ const upload = require('../middleware/upload');
  *         - description
  *       properties:
  *         id:
- *           type: string
+ *           type: integer
  *           description: The auto-generated id of the blog
  *         title:
  *           type: string
@@ -36,16 +36,16 @@ const upload = require('../middleware/upload');
  *           description: The date of the blog
  *         image:
  *           type: string
- *           description: The image URL of the blog
+ *           description: The image URL/path of the blog
  *         description:
  *           type: string
  *           description: The description of the blog
  *       example:
- *         id: 60d5ecb74b24c72b8c8b4567
+ *         id: 1
  *         title: My Blog Post
  *         author: John Doe
  *         date: 2023-06-25T00:00:00.000Z
- *         image: https://example.com/image.jpg
+ *         image: https://res.cloudinary.com/example/image/upload/v1/blog.jpg
  *         description: This is a blog post description
  */
 
@@ -79,61 +79,61 @@ const upload = require('../middleware/upload');
 router.route('/')
   .get(getAllBlogs)
 
-/**
- * @swagger
- * /api/blogs/create:
- *   post:
- *     summary: Create a new blog
- *     tags: [Blogs]
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             required:
- *               - title
- *               - author
- *               - image
- *               - description
- *             properties:
- *               title:
- *                 type: string
- *                 description: The title of the blog post
- *               author:
- *                 type: string
- *                 description: The author of the blog post
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: Image file for the blog post (jpeg, jpg, png, gif, webp)
- *               description:
- *                 type: string
- *                 description: The description of the blog post
- *           example:
- *             title: New Blog Post
- *             author: Jane Doe
- *             image: (binary file)
- *             description: This is a new blog post
- *     responses:
- *       201:
- *         description: Blog created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Blog created successfully
- *                 data:
- *                   $ref: '#/components/schemas/Blog'
- *       400:
- *         description: Bad request
- */
+  /**
+   * @swagger
+   * /api/blogs/create:
+   *   post:
+   *     summary: Create a new blog
+   *     tags: [Blogs]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         multipart/form-data:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - title
+   *               - author
+   *               - image
+   *               - description
+   *             properties:
+   *               title:
+   *                 type: string
+   *                 description: The title of the blog post
+   *               author:
+   *                 type: string
+   *                 description: The author of the blog post
+   *               image:
+   *                 type: string
+   *                 format: binary
+   *                 description: Image file for the blog post (jpeg, jpg, png, gif, webp)
+   *               description:
+   *                 type: string
+   *                 description: The description of the blog post
+   *           example:
+   *             title: New Blog Post
+   *             author: Jane Doe
+   *             image: (binary file)
+   *             description: This is a new blog post
+   *     responses:
+   *       201:
+   *         description: Blog created successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Blog created successfully
+   *                 data:
+   *                   $ref: '#/components/schemas/Blog'
+   *       400:
+   *         description: Bad request
+   */
   ;
 
 // Route for creating a blog
@@ -149,7 +149,7 @@ router.post('/create', upload.single('image'), createBlog);
  *       - in: path
  *         name: id
  *         schema:
- *           type: string
+ *           type: integer
  *         required: true
  *         description: The blog ID
  *     responses:
@@ -173,94 +173,94 @@ router.post('/create', upload.single('image'), createBlog);
 router.route('/:id')
   .get(getBlogById)
 
-/**
- * @swagger
- * /api/blogs/{id}:
- *   put:
- *     summary: Update a blog by ID
- *     tags: [Blogs]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The blog ID
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 description: The title of the blog post
- *               author:
- *                 type: string
- *                 description: The author of the blog post
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: Image file for the blog post (jpeg, jpg, png, gif, webp)
- *               description:
- *                 type: string
- *                 description: The description of the blog post
- *     responses:
- *       200:
- *         description: Blog updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Blog updated successfully
- *                 data:
- *                   $ref: '#/components/schemas/Blog'
- *       404:
- *         description: Blog not found
- *       400:
- *         description: Bad request
- */
+  /**
+   * @swagger
+   * /api/blogs/{id}:
+   *   put:
+   *     summary: Update a blog by ID
+   *     tags: [Blogs]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The blog ID
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         multipart/form-data:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               title:
+   *                 type: string
+   *                 description: The title of the blog post
+   *               author:
+   *                 type: string
+   *                 description: The author of the blog post
+   *               image:
+   *                 type: string
+   *                 format: binary
+   *                 description: Image file for the blog post (jpeg, jpg, png, gif, webp)
+   *               description:
+   *                 type: string
+   *                 description: The description of the blog post
+   *     responses:
+   *       200:
+   *         description: Blog updated successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Blog updated successfully
+   *                 data:
+   *                   $ref: '#/components/schemas/Blog'
+   *       404:
+   *         description: Blog not found
+   *       400:
+   *         description: Bad request
+   */
   .put(upload.single('image'), updateBlog)
 
-/**
- * @swagger
- * /api/blogs/{id}:
- *   delete:
- *     summary: Delete a blog by ID
- *     tags: [Blogs]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The blog ID
- *     responses:
- *       200:
- *         description: Blog deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Blog deleted successfully
- *       404:
- *         description: Blog not found
- *       500:
- *         description: Server error
- */
+  /**
+   * @swagger
+   * /api/blogs/{id}:
+   *   delete:
+   *     summary: Delete a blog by ID
+   *     tags: [Blogs]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The blog ID
+   *     responses:
+   *       200:
+   *         description: Blog deleted successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                   example: true
+   *                 message:
+   *                   type: string
+   *                   example: Blog deleted successfully
+   *       404:
+   *         description: Blog not found
+   *       500:
+   *         description: Server error
+   */
   .delete(deleteBlog);
 
 module.exports = router;

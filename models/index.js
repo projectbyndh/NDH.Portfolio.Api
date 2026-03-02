@@ -9,6 +9,7 @@ const Partner = require('./Partner');
 const Project = require('./Project');
 // const Role = require('./Role'); // Removed - using simplified team structure
 const Service = require('./Service');
+const ServiceDetail = require('./ServiceDetail');
 const Team = require('./Team');
 const Testimonial = require('./Testimonial');
 const Course = require('./Course');
@@ -26,6 +27,7 @@ module.exports = {
     Project,
     // Role, // Removed - using simplified team structure
     Service,
+    ServiceDetail,
     Team,
     Testimonial,
     Course,

@@ -6,6 +6,8 @@ const CareerApplication = require('./CareerApplication');
 const Course = require('./Course');
 const Batch = require('./Batch');
 const Enrollment = require('./Enrollment');
+const Service = require('./Service');
+const ServiceDetail = require('./ServiceDetail');
 
 const initAssociations = () => {
     // LeadershipLayer <-> Role (REMOVED - using simplified structure without roles)
@@ -71,6 +73,19 @@ const initAssociations = () => {
     Enrollment.belongsTo(Batch, {
         foreignKey: 'batchId',
         as: 'batch'
+    });
+
+    // Service <-> ServiceDetail (one-to-one)
+    // A Service has exactly one ServiceDetail record.
+    // When a Service is deleted, its ServiceDetail is automatically removed (CASCADE).
+    Service.hasOne(ServiceDetail, {
+        foreignKey: 'serviceId',
+        as: 'detail',
+        onDelete: 'CASCADE'
+    });
+    ServiceDetail.belongsTo(Service, {
+        foreignKey: 'serviceId',
+        as: 'service'
     });
 };
 
