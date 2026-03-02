@@ -64,10 +64,10 @@ const swaggerOptions = {
       description: 'API documentation for Portfolio Backend',
     },
     servers: [
-      {
-        url: process.env.APP_URL_LOCAL,
-        description: 'Local Development',
-      },
+      // {
+      //   url: process.env.APP_URL_LOCAL,
+      //   description: 'Local Development',
+      // },
       {
         url: process.env.APP_URL_PROD,
         description: 'Production Server',
