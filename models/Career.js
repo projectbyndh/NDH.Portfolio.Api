@@ -57,13 +57,12 @@ const Career = sequelize.define('Career', {
     }
   },
   category: {
-    type: DataTypes.ENUM('CTO', 'CEO', 'CFO', 'Senior Developer', 'Developer', 'Intern'),
+    type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'Developer',
     validate: {
-      isIn: {
-        args: [['CTO', 'CEO', 'CFO', 'Senior Developer', 'Developer', 'Intern']],
-        msg: "Category must be one of: CTO, CEO, CFO, Senior Developer, Developer, Intern"
+      notEmpty: {
+        msg: 'Category is required'
       }
     }
   }
