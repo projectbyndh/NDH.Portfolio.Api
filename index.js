@@ -64,10 +64,10 @@ const swaggerOptions = {
       description: 'API documentation for Portfolio Backend',
     },
     servers: [
-      // {
-      //   url: process.env.APP_URL_LOCAL,
-      //   description: 'Local Development',
-      // },
+      {
+        url: `http://localhost:${process.env.PORT || 5000}`,
+        description: 'Local Development',
+      },
       {
         url: process.env.APP_URL_PROD,
         description: 'Production Server',
@@ -79,6 +79,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.get('/', (req, res) => {
